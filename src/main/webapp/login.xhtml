@@ -23,11 +23,11 @@
                     <p:panel id="dialog" header="login" style="text-align: center; background-color: #F5F5F5; width: 550px; height: 200px; margin-left: auto; margin-right: auto;">
                     <h:form id="usuario_form">                         
                         <p:messages id="error_datos"/>
-                        <h:panelGrid columns="3" columnClasses="leftalign,leftalign,leftalign">                            
-                            <p:commandButton icon="ui-icon-search" style="width: 40px; height: 40px;"/>
+                        <h:panelGrid columns="3" columnClasses="leftalign,leftalign,leftalign">
+                            <p:outputLabel><i class="fa fa-user fa-2x"/></p:outputLabel>
                             <p:inputText id="username" style=" width: 465px; height: 30px;" value="#{personaBean.user_session.cuenta}" required="true" label="username"/>
                              <!--<h:message id="cuenta_error" for="username" class="ui-state-error"/>-->
-                            <p:commandButton icon="ui-icon-search" style="width: 40px; height: 40px;"/>                            
+                            <p:outputLabel><i class="fa fa-lock fa-2x"/></p:outputLabel>
                             <p:password id="password" style="width: 465px; height: 30px;" value="#{personaBean.user_session.contrasenia}" required="true" label="contraseña" />
                              <!--<h:message id="password_error" for="password"/>-->                            
 
