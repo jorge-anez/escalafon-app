@@ -46,23 +46,27 @@
 
         <property name="mappingResources">
             <list>
-                <value> hibernate/Estudiante.hbm.xml </value>
-                <value> hibernate/EstudianteRegistroMateria.hbm.xml </value>
-                <value> hibernate/Facultad.hbm.xml </value>
-                <value> hibernate/DocenteEscalafon.hbm.xml </value>
-                <value> hibernate/AdministradorCoordinador.hbm.xml </value>
-                <value> hibernate/Docente.hbm.xml </value>
-                <value> hibernate/Cartilla.hbm.xml </value>
-                <value> hibernate/ContenidoCartilla.hbm.xml </value>
-                <value> hibernate/RequiereMateria.hbm.xml </value>
-                <value> hibernate/Evaluacion.hbm.xml </value>
-                <value> hibernate/Materia.hbm.xml </value>
-                <value> hibernate/Escalafon.hbm.xml </value>
-                <value> hibernate/AdministradorDirector.hbm.xml </value>
-                <value> hibernate/Persona.hbm.xml </value>
-                <value> hibernate/Universidad.hbm.xml </value>
-                <value> hibernate/Carrera.hbm.xml </value>
-                <value> hibernate/DocenteRegistroMateria.hbm.xml </value>
+                <value>hibernate/Estudiante.hbm.xml</value>
+                <value>hibernate/EstudianteRegistroMateria.hbm.xml</value>
+                <value>hibernate/Facultad.hbm.xml</value>
+                <value>hibernate/DocenteEscalafon.hbm.xml</value>
+                <value>hibernate/AdministradorCoordinador.hbm.xml</value>
+                <value>hibernate/Docente.hbm.xml</value>
+                <value>hibernate/Cartilla.hbm.xml</value>
+                <value>hibernate/ContenidoCartilla.hbm.xml</value>
+                <value>hibernate/RequiereMateria.hbm.xml</value>
+                <value>hibernate/Evaluacion.hbm.xml</value>
+                <value>hibernate/Materia.hbm.xml</value>
+                <value>hibernate/Escalafon.hbm.xml</value>
+                <value>hibernate/AdministradorDirector.hbm.xml</value>
+                <value>hibernate/Persona.hbm.xml</value>
+                <value>hibernate/Universidad.hbm.xml</value>
+                <value>hibernate/Carrera.hbm.xml</value>
+                <value>hibernate/DocenteRegistroMateria.hbm.xml</value>
+                <value>hibernate/Perfil.hbm.xml</value>
+                <value>hibernate/PerfilPersona.hbm.xml</value>
+                <value>hibernate/Menu.hbm.xml</value>
+                <value>hibernate/Submenu.hbm.xml</value>
             </list>
         </property>
     </bean>

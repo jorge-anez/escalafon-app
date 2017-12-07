@@ -7,31 +7,24 @@
 package dea.controlador.beans;
 
 import dea.controlador.dao_classes.PersonaDAO;
-import dea.controlador.dao_classes.TestClass;
-import dea.modelo.AdministradorCoordinador;
-import dea.modelo.AdministradorDirector;
-import dea.modelo.Docente;
-import dea.modelo.Estudiante;
+import dea.modelo.Menu;
+import dea.modelo.Perfil;
+import dea.modelo.PerfilPersona;
 import dea.modelo.Persona;
+import dea.modelo.Submenu;
 import java.io.IOException;
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-//import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ComponentSystemEvent;
-import javax.faces.model.SelectItem;
-import javax.swing.JOptionPane;
-import org.primefaces.context.RequestContext;
-import org.primefaces.model.menu.MenuModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -48,7 +41,13 @@ public class PersonaBean implements Serializable{
     private Persona pSelected;    
     private String theme="afternoon";
     private ArrayList<Persona> users;
-    private List<String> perfiles;
+    private Map<String,Integer> perfiles=new HashMap<String,Integer>(){{                                                                         
+                                                                        put("Administrador",1);
+                                                                        put("Director DEA",2);
+                                                                        put("Coordinador DEA",3);
+                                                                        put("Docente",4);       
+                                                                    }};
+    private Integer[] selectedPerfiles;
     @Autowired
     private PersonaDAO personaDAO;   
     private Persona user_session;
@@ -56,14 +55,16 @@ public class PersonaBean implements Serializable{
      * Creates a new instance of PersonaBean
      */   
     public void changeTheme(AjaxBehaviorEvent vce){
-        String str= (String) ((UIOutput) vce.getSource()).getValue();        
-        //JOptionPane.showMessageDialog(null, ""+str);
+        String str= (String) ((UIOutput) vce.getSource()).getValue();
+        FacesContext context= FacesContext.getCurrentInstance();
+        Persona psession=(Persona)context.getExternalContext().getSessionMap().get("user");
         Persona p=new Persona();
-        p.setCi(user_session.getCi());
-        p.setNombre(user_session.getNombre());
-        p.setApellido(user_session.getApellido());
-        p.setCuenta(user_session.getCuenta());
-        p.setContrasenia(user_session.getContrasenia());
+        p.setCi(psession.getCi());
+        p.setNombre(psession.getNombre());
+        p.setApellido(psession.getApellido());
+        p.setCuenta(psession.getCuenta());
+        p.setEstado(psession.getEstado());
+        p.setContrasenia(psession.getContrasenia());
         p.setTheme(str);
         personaDAO.update(p);
     }
@@ -77,17 +78,62 @@ public class PersonaBean implements Serializable{
                FacesMessage msg=new FacesMessage("Usuario o contraseña son incorrectos!!", "EROR MSG");
                msg.setSeverity(FacesMessage.SEVERITY_ERROR);
                context.getCurrentInstance().addMessage(null, msg);
-           }else{         
-               this.theme=user_session.getTheme();
-               context.getExternalContext().getSessionMap().put("user",user_session);            
-               context.getExternalContext().redirect("crud/universidad.xhtml");       
-           }
-            } catch (Exception e) {
-                e.printStackTrace();
-// System.out.println("Error.."+e.);
+           }else
+               if(user_session.getEstado().compareTo("ACTIVO")==0){
+                    this.theme=user_session.getTheme();               
+                    context.getExternalContext().getSessionMap().put("user",user_session);            
+                    context.getExternalContext().redirect("crud/welcome.xhtml");
+               }else{
+                    context.getExternalContext().getSessionMap().clear();
+                    FacesMessage msg=new FacesMessage("Usuario Inactivo Consulte con el Admin del Sistema!!", "EROR MSG");
+                    msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+                    context.getCurrentInstance().addMessage(null, msg);
+               }
+           
+            } catch (IOException e) {
               }
     }
-     public void logout(){       
+    public void restorePassword(Persona p){
+        p.setContrasenia(encriptPassword(p.getCi()));
+        personaDAO.merge(p);
+    }
+    public void activarDesactivar(Persona p){
+        if(p.getEstado()==null)
+            p.setEstado("ACTIVO");
+        String estado=p.getEstado().compareTo("ACTIVO")==0?"INACTIVO":"ACTIVO";
+        p.setEstado(estado);
+        personaDAO.merge(p);
+    }
+    public List<Menu> getPersona_menu(){
+        if(user_session==null) return null;
+        Set<PerfilPersona> perfil=user_session.getPerfilPersonas();
+               ArrayList<Integer> p=new ArrayList<Integer>();
+               p.add(-1);
+               for(PerfilPersona e:perfil)
+                   p.add(e.getPerfil().getIdPerfil());
+               
+               String cad_perfiles=p.toString().replace('[','(').replace(']',')');
+               List<Menu> m=personaDAO.getMenu(cad_perfiles);
+        return  m;
+    }
+    public String perfil_usuario(){
+        FacesContext context= FacesContext.getCurrentInstance();
+        Persona p=(Persona)context.getExternalContext().getSessionMap().get("user");
+        Set<Integer> h=personaDAO.getPerfiles(p.getCi());
+        String perfil="";
+        for(Map.Entry<String,Integer> e:perfiles.entrySet())
+            if(h.contains(e.getValue()))
+                perfil+=" "+e.getKey();
+        return perfil;
+    }
+    public void cancel(){
+        selectedPerfiles=null;
+    }
+    public List<Submenu> getSub_menu(int id_menu){         
+               List<Submenu> m=personaDAO.getSubmenu(id_menu);            
+        return  m;
+    }
+    public void logout(){
          try {
              FacesContext context= FacesContext.getCurrentInstance();             
              context.getExternalContext().getSessionMap().clear();
@@ -99,8 +145,8 @@ public class PersonaBean implements Serializable{
     public void isLogged(ComponentSystemEvent event){  
     try{
         FacesContext context= FacesContext.getCurrentInstance();    
-        Map m=context.getExternalContext().getSessionMap();
-        if(!m.containsKey("user")){        
+        Map m=context.getExternalContext().getSessionMap();        
+        if(!m.containsKey("user")){            
             m.clear();
             context.getExternalContext().redirect("../login.xhtml"); 
         }
@@ -112,13 +158,25 @@ public class PersonaBean implements Serializable{
        pSelected.setNombre(p.getNombre());
        pSelected.setApellido(p.getApellido());
        pSelected.setCuenta(p.getCuenta());
-       pSelected.setTheme(p.getTheme());
+       pSelected.setContrasenia(p.getContrasenia());
+       pSelected.setEstado(p.getEstado());
+       pSelected.setTheme(p.getTheme());       
+       selectedPerfiles=new Integer[p.getPerfilPersonas().size()];
+       int i=0;
+       for(Object e:p.getPerfilPersonas())
+            selectedPerfiles[i++]=((PerfilPersona)e).getPerfil().getIdPerfil();       
        if(p.getTheme()==null)
            pSelected.setTheme("cupertino");
    }
    public void updateItem(){
-       pSelected.setContrasenia(this.encriptPassword(pSelected.getContrasenia()));
-       this.getPersonaDAO().update(pSelected);
+        Set p=pSelected.getPerfilPersonas();
+        for(Integer e:selectedPerfiles){
+              PerfilPersona pf=new PerfilPersona();
+                      pf.setPerfil(new Perfil(e));     
+                      pf.setPersona(pSelected);                     
+              p.add(pf);
+       }       
+       this.personaDAO.merge(pSelected);       
    }
    public void viewItem(Persona p){
        pSelected=new Persona();
@@ -132,18 +190,27 @@ public class PersonaBean implements Serializable{
         pSelected.setCi(p.getCi());        
     }
     public void removeItem(){
-        //JOptionPane.showMessageDialog(null, "se va aliminar "+pSelected.getCi());
         this.getPersonaDAO().delete(pSelected);
         users=(ArrayList<Persona>) this.personaDAO.readAll();
     }
+    
   public void createItem(){
-      pSelected=new Persona();
-      perfiles=new ArrayList<String>();
+      pSelected=new Persona();      
   }
-  public void createItem(boolean  sw){    
+  public void createItem(boolean  sw){      
+      Set p=pSelected.getPerfilPersonas();      
+      for(Integer e:selectedPerfiles){
+            PerfilPersona pf=new PerfilPersona();
+                    pf.setPerfil(new Perfil(e));     
+                    pf.setPersona(pSelected);
+            p.add(pf);            
+      }            
       this.pSelected.setContrasenia(encriptPassword(this.pSelected.getContrasenia()));
       this.pSelected.setTheme("cupertino");
+      this.pSelected.setPerfilPersonas(p);
+      this.pSelected.setEstado("ACTIVO");
       this.personaDAO.create(pSelected);
+      selectedPerfiles=null;
   }
   private String encriptPassword(String password) {
         try {
@@ -164,22 +231,7 @@ public class PersonaBean implements Serializable{
         }
         return password;
     }
-    /**
-     * @return the tipoUsuario
-     */
-  /*
-    public Integer getTipoUsuario() {
-        return tipoUsuario;
-    }
-*/
-    /**
-     * @param tipoUsuario the tipoUsuario to set
-     */
-  /*
-    public void setTipoUsuario(Integer tipoUsuario) {
-        this.tipoUsuario = tipoUsuario;
-    }
-  */
+  
     /**
      * @return the personaDAO
      */
@@ -225,22 +277,7 @@ public class PersonaBean implements Serializable{
         this.pSelected = pSelected;
     }
 
-    /**
-     * @return the perfiles
-     */
-    public List<String> getPerfiles() {
-        if(perfiles==null)
-            perfiles=new ArrayList<String>(4);
-        return perfiles;
-    }
-
-    /**
-     * @param perfiles the perfiles to set
-     */
-    public void setPerfiles(List<String> perfiles) {
-        this.perfiles = perfiles;
-    }
-
+   
     /**
      * @return the theme
      */
@@ -274,37 +311,31 @@ public class PersonaBean implements Serializable{
     }
 
     /**
-     * @return the username
+     * @return the perfiles
      */
-    /*
-    public String getUsername() {
-        theme="afternoon";
-        return username;
+    public Map<String,Integer> getPerfiles() {
+        return perfiles;
     }
 
     /**
-     * @param username the username to set
+     * @param perfiles the perfiles to set
      */
-    /*
-    public void setUsername(String username) {
-        this.username = username;
-    }  
-    */
+    public void setPerfiles(Map<String,Integer> perfiles) {
+        this.perfiles = perfiles;
+    }
 
     /**
-     * @return the password
+     * @return the selectedPerfiles
      */
-    /*
-    public String getPassword() {
-        return password;
+    public Integer[] getSelectedPerfiles() {
+        return selectedPerfiles;
     }
-*/
+
     /**
-     * @param password the password to set
+     * @param selectedPerfiles the selectedPerfiles to set
      */
-    /*
-    public void setPassword(String password) {
-        this.password = password;
+    public void setSelectedPerfiles(Integer[] selectedPerfiles) {
+        this.selectedPerfiles = selectedPerfiles;
     }
-    */
+    
 }

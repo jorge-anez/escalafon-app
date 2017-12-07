@@ -75,7 +75,8 @@ public class UniversidadBean implements Serializable{
         uSelected.setSiglaUniversidad("");
     }
     public void createItem(boolean op){
-        this.getUniversidadDAO().create(uSelected);
+        Universidad u=new Universidad(uSelected.getSiglaUniversidad(), uSelected.getNombre());
+        this.universidadDAO.create(u);
         uSelected.setNombre("");
         uSelected.setSiglaUniversidad("");
     }

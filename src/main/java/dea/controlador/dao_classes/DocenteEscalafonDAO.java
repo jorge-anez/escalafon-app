@@ -25,4 +25,12 @@ public class DocenteEscalafonDAO extends GenericDAO<DocenteEscalafon,Long> imple
         trans.commit();   
         return result;
     }
+    public List<Object[]> getDocenteList(){
+        Session session=this.getSession();
+        Transaction trans=session.beginTransaction();
+        List<Object[]> result=session.createQuery("from Persona p inner join p.docente as d where d.ci not in(select de.ci from DocenteEscalafon de)").list();
+//Persona p=(Persona) session.createCriteria(Persona.class).add(Restrictions.eq("cuenta",)).uniqueResult();           
+        trans.commit();
+        return result;
+    }
 }

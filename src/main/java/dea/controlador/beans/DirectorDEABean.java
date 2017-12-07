@@ -8,12 +8,11 @@ package dea.controlador.beans;
 
 import dea.controlador.dao_classes.DirectorDeaDAO;
 import dea.controlador.dao_classes.PersonaDAO;
-import dea.modelo.AdministradorCoordinador;
 import dea.modelo.AdministradorDirector;
 import dea.modelo.Docente;
 import dea.modelo.Persona;
+import java.io.Serializable;
 import java.util.Date;
-import javax.swing.JOptionPane;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -24,41 +23,34 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("session")
-public class DirectorDEABean {
+public class DirectorDEABean implements Serializable{
     @Autowired
     private PersonaDAO personaDAO;
     @Autowired
     private DirectorDeaDAO directorDeaDAO;
-    private Persona dir_dea;
-    //private AdministradorDirector admin_dir;
-    //private Docente doc;
+    private Persona dir_dea;    
     private String ci;
     private Date fechaInicio,FechaFin;
    
-    public void asignarDirDEA(String ci){
-        //admin_dir=new AdministradorDirector();
-       // admin_dir.setCi(p.getCi());
-       
-        this.ci=ci;
-    }
-    public void asignarDirDEA(){
-      //  admin_dir.setFechaInicio(new Date(fechaInicio));
-      //  admin_dir.setFechaFin(new Date(FechaFin));
-      AdministradorDirector  admin_dir=new AdministradorDirector();
+ 
+    public void asignarDirDEA(){      
+        if(dir_dea.getCi().compareTo("-1")!=0)
+            personaDAO.disableDir(dir_dea.getCi());        
+        AdministradorDirector  admin_dir=new AdministradorDirector();
         admin_dir.setCi(this.ci);
         Persona p=new Persona(this.ci);
         admin_dir.setPersona(p);
         admin_dir.setFechaInicio(this.fechaInicio);
         admin_dir.setFechaFin(this.FechaFin);
-        directorDeaDAO.create(admin_dir);
-       // JOptionPane.showMessageDialog(null, "maldicion "+getFechaInicio()+ "  "+getFechaFin() ); 
+        admin_dir.setEstado("ACTIVO");        
+       if(directorDeaDAO.read(ci)==null)
+            directorDeaDAO.create(admin_dir);
+       else
+            directorDeaDAO.merge(admin_dir);
+       this.ci="";
     }
-    public void retirarCargo(Persona a){
-        AdministradorDirector y=new AdministradorDirector();
-        y.setCi(a.getCi());
-        y.setFechaInicio(a.getAdministradorDirector().getFechaInicio());
-        y.setFechaFin(a.getAdministradorDirector().getFechaFin());
-        getDirectorDeaDAO().delete(y);        
+    public void retirarCargo(String ci){
+       
     }
     /**
      * @return the personaDAO
@@ -74,12 +66,22 @@ public class DirectorDEABean {
         this.personaDAO = personaDAO;
     }
 
-    /**
-     * @return the dir_dea
-     */
+    
+    public void nuevo(){
+        
+    }
     public Persona getDir_dea() {
-       
-            //JOptionPane.showMessageDialog(null, "  "+dir_dea.getAdministradorDirector().getFechaInicio());
+        Object[] p=this.getPersonaDAO().findDirDEA();
+        if(p==null) {
+            dir_dea=new Persona("-1");
+            dir_dea.setAdministradorDirector(new AdministradorDirector());            
+        }
+        else{
+            dir_dea=(Persona)p[0];
+            dir_dea.setAdministradorDirector((AdministradorDirector) p[1]);  
+            dir_dea.setDocente((Docente) p[2]); 
+        }
+            
         return dir_dea;
     }
 
@@ -134,16 +136,21 @@ public class DirectorDEABean {
     public void setFechaFin(Date FechaFin) {
         this.FechaFin = FechaFin;
     }
-    
-    public boolean  render(){
-         Object[] p=this.getPersonaDAO().findDirDEA();
-        if(p==null) return false;           
-            dir_dea=(Persona)p[0];
-            dir_dea.setAdministradorDirector((AdministradorDirector) p[1]);
-            dir_dea.setDocente((Docente) p[2]);
-        return true;
-    }
-   
 
+    /**
+     * @return the ci
+     */
+    public String getCi() {
+        return ci;
+    }
+
+    /**
+     * @param ci the ci to set
+     */
+    public void setCi(String ci) {
+        this.ci = ci;
+    }
+    
+   
     
 }

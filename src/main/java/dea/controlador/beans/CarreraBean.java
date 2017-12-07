@@ -14,18 +14,9 @@ import dea.modelo.Facultad;
 import dea.modelo.Universidad;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedProperty;
+import java.util.List;
 import javax.faces.component.UIOutput;
-import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.event.ValueChangeEvent;
-import javax.servlet.http.HttpSession;
-import javax.swing.JOptionPane;
-import org.primefaces.context.RequestContext;
-import org.primefaces.event.RowEditEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -39,10 +30,11 @@ import org.springframework.stereotype.Component;
 public class CarreraBean implements Serializable{  
     
     private FacultadBean facultadBean;
-    private ArrayList<Universidad> universidadList;
-    private ArrayList<Facultad> facultadList; 
-    private ArrayList<Carrera> carreraList;
-    private String fSelected;
+    private List<Universidad> universidadList;
+    private List<Facultad> facultadList; 
+    private List<Carrera> carreraList;
+    private String uSelected;
+    private long fSelected;
     private Carrera cSelected;
     
     @Autowired 
@@ -52,33 +44,25 @@ public class CarreraBean implements Serializable{
     @Autowired     
     private FacultadDAO facultdadDAO;
     
-    public CarreraBean() {
-       
+    public CarreraBean() {       
        cSelected=new Carrera();  
     } 
     public void removeItem(Carrera c){
       cSelected=new Carrera();
       cSelected.setIdCarrera(c.getIdCarrera());
       cSelected.setNombre(c.getNombre());
-      cSelected.setSiglaCarrera(c.getSiglaCarrera());
-      //cSelected.setFacultad(getfSelected());
-      //  uSelected.setNombre(u.getNombre());
-      //  uSelected.setSiglaUniversidad(u.getSiglaUniversidad());
-       
+      cSelected.setSiglaCarrera(c.getSiglaCarrera());       
     }
     public void removeItem(){
-       Facultad f=new Facultad(Long.parseLong(fSelected));
+       Facultad f=new Facultad(fSelected);
        cSelected.setFacultad(f); 
        this.getCarreraDAO().delete(cSelected);
-       carreraList=(ArrayList<Carrera>) carreraDAO.readCarrera(Long.parseLong(fSelected));
-       // setCarreraList((ArrayList<Carrera>) carreraDAO.readCarrera(getfSelected().getIdFacultad()));
+       carreraList=(ArrayList<Carrera>) carreraDAO.readCarrera(fSelected);
     }
     public void updateItem(){
-       Facultad f=new Facultad(Long.parseLong(fSelected));
+       Facultad f=new Facultad(fSelected);
        cSelected.setFacultad(f);
-       this.getCarreraDAO().update(cSelected);
-       carreraList=(ArrayList<Carrera>) carreraDAO.readCarrera(Long.parseLong(fSelected));
-     //   setCarreraList((ArrayList<Carrera>) carreraDAO.readCarrera(getfSelected().getIdFacultad()));
+       this.getCarreraDAO().update(cSelected);     
     }
     public void updateItem(Carrera f){        
       cSelected=new Carrera();
@@ -95,59 +79,30 @@ public class CarreraBean implements Serializable{
        cSelected=new Carrera();      
     }
     public void createItem(boolean op){        
-        //this.getcSelected().setFacultad(getfSelected());
-        Facultad f=new Facultad(Long.parseLong(fSelected));
+        Facultad f=new Facultad(fSelected);
         cSelected.setFacultad(f);
-        carreraDAO.create(cSelected);
-        carreraList=(ArrayList<Carrera>) carreraDAO.readCarrera(Long.parseLong(fSelected));
-     //   setCarreraList((ArrayList<Carrera>) carreraDAO.readCarrera(getfSelected().getIdFacultad()));
-       
+        carreraDAO.create(cSelected);       
     }
 
-    /**
-     * @return the universidadList
-     */
-    public void leerFacultad(String sigla){
-     //   this.getFacultdadDAO().readFacultdad(sigla);
-    }
-    public void leerFacultad(ValueChangeEvent event){
-        //JOptionPane.showMessageDialog(null, "joder "+event.getNewValue().toString());
-        //this.getFacultdadDAO().readFacultdad(u);
-    }
-    
     public void changeUniversidad(AjaxBehaviorEvent vce){      
-        String str= (String) ((UIOutput) vce.getSource()).getValue();        
-        if (str.compareTo("null")==0) {
-            getCarreraList().clear(); return;
-        }
-        //fSelected=new Facultad();
-        //fSelected.setIdFacultad(Long.parseLong(str));    
-        facultadList=(ArrayList<Facultad>) facultdadDAO.readFacultdad(str);
-        RequestContext.getCurrentInstance().reset(":table_form_header");
-        carreraList.clear();
+        this.uSelected= (String) ((UIOutput) vce.getSource()).getValue();        
+        this.fSelected=0;
     }
     public void changeFacultad(AjaxBehaviorEvent vce){      
-        String str= (String) ((UIOutput) vce.getSource()).getValue();        
-        if (str.compareTo("null")==0) {
-            getCarreraList().clear(); return;
-        }
-        fSelected=str;
-        carreraList=(ArrayList<Carrera>) carreraDAO.readCarrera(Long.parseLong(fSelected));
+        fSelected= (Long) ((UIOutput) vce.getSource()).getValue();        
     }
 
     /**
      * @return the carreraList
      */
-    public ArrayList<Carrera> getCarreraList() {
-        if(carreraList==null)
-            carreraList=new ArrayList<Carrera>();
-        return carreraList;
+    public List<Carrera> getCarreraList() {        
+        return carreraDAO.readCarrera(fSelected);
     }
 
     /**
      * @param carreraList the carreraList to set
      */
-    public void setCarreraList(ArrayList<Carrera> carreraList) {
+    public void setCarreraList(List<Carrera> carreraList) {
         this.carreraList = carreraList;
     }
 
@@ -196,29 +151,28 @@ public class CarreraBean implements Serializable{
     /**
      * @return the universidadList
      */
-    public ArrayList<Universidad> getUniversidadList() {
-         universidadList=(ArrayList<Universidad>) universidadDAO.readAll();
-        return universidadList;
+    public List<Universidad> getUniversidadList(){
+        return universidadDAO.readAll();
     }
 
     /**
      * @param universidadList the universidadList to set
      */
-    public void setUniversidadList(ArrayList<Universidad> universidadList) {
+    public void setUniversidadList(List<Universidad> universidadList) {
         this.universidadList = universidadList;
     }
 
     /**
      * @return the facultadList
      */
-    public ArrayList<Facultad> getFacultadList() {
-        return facultadList;
+    public List<Facultad> getFacultadList() {
+        return facultdadDAO.readFacultdad(uSelected);
     }
 
     /**
      * @param facultadList the facultadList to set
      */
-    public void setFacultadList(ArrayList<Facultad> facultadList) {
+    public void setFacultadList(List<Facultad> facultadList) {
         this.facultadList = facultadList;
     }
 
@@ -239,23 +193,30 @@ public class CarreraBean implements Serializable{
     /**
      * @return the fSelected
      */
-    public String getfSelected() {
+    public long getfSelected() {
         return fSelected;
     }
 
     /**
      * @param fSelected the fSelected to set
      */
-    public void setfSelected(String fSelected) {
+    public void setfSelected(long fSelected) {
         this.fSelected = fSelected;
     }
 
-    
-  
+    /**
+     * @return the uSelected
+     */
+    public String getuSelected() {
+        return uSelected;
+    }
 
-    
+    /**
+     * @param uSelected the uSelected to set
+     */
+    public void setuSelected(String uSelected) {
+        this.uSelected = uSelected;
+    }
 
-
-    
 }
 

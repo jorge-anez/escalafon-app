@@ -8,9 +8,7 @@ package dea.controlador.dao_classes;
 
 
 import dea.controlador.dao_interfaces.CoorDAOAInerface;
-import dea.controlador.dao_interfaces.DirectorDeaDAOInterface;
 import dea.modelo.AdministradorCoordinador;
-import dea.modelo.AdministradorDirector;
 import java.io.Serializable;
 import java.util.List;
 import org.springframework.stereotype.Repository;

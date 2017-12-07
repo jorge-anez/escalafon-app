@@ -28,6 +28,7 @@ public interface GenericDAOInterface <T, ID extends Serializable> {
     /** Save changes made to a persistent object.
      * @param x */
     void update(T x);
+    void merge(T x);
 
     /** Remove an object from persistent storage in the database
      * @param x */

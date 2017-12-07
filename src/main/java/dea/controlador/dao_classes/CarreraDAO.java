@@ -7,10 +7,7 @@
 package dea.controlador.dao_classes;
 
 import dea.controlador.dao_interfaces.CarreraDAOInterface;
-import dea.controlador.dao_interfaces.UniversidadDAOInterface;
 import dea.modelo.Carrera;
-import dea.modelo.Facultad;
-import dea.modelo.Universidad;
 import java.io.Serializable;
 import java.util.List;
 import org.hibernate.Session;

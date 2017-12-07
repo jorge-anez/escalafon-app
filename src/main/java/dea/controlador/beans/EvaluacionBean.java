@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.faces.component.UIOutput;
 import javax.faces.event.AjaxBehaviorEvent;
-import javax.swing.JOptionPane;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

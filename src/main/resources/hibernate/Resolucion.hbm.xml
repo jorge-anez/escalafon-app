@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 30-sep-2015 12:35:25 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="dea.modelo.Resolucion" table="resolucion" optimistic-lock="version">
+        <id name="tipoRes" type="long">
+            <column name="tipo_res" />
+            <generator class="assigned" />
+        </id>
+        <property name="resolucion" type="string">
+            <column name="resolucion" />
+        </property>
+        <set name="escalafons" table="escalafon" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="tipo_res" />
+            </key>
+            <one-to-many class="dea.modelo.Escalafon" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -29,25 +29,43 @@ public class DocenteBean implements Serializable{
     private PersonaDAO personaDAO;
     private List<Persona> docenteList;
     private List<Persona> userList;
+    private String estado;
     private String grado;
     private String ci;
     @Autowired
-    private DocenteDAO docenteDAO;
-    
-    public void crearDocente(String ci){
-        this.ci=ci;
-    }
-    public void crearDocente(){
+    private DocenteDAO docenteDAO;    
+    public void nuevo(){}
+    public void asignarDocente(){
         Persona p=new Persona(this.ci);
         Docente d=new Docente();
-        d.setGradoAcademico(grado);
+        d.setGradoAcademico(this.grado);
+        d.setEstado("ACTIVO");
         d.setPersona(p);
         this.docenteDAO.create(d);
     }
-    public void quitarDocente(Docente c){
-        Docente x=new Docente();
-        x.setCi(c.getCi());
+    public void delete(Docente c){
+        this.ci=c.getCi();        
+    }    
+    public void delete(){
+        Docente x=new Docente(new Persona(this.ci));
+        x.setCi(this.ci);
         docenteDAO.delete(x);
+        this.ci="";
+    }
+    public void update(Docente eval){
+        this.ci=eval.getCi();
+        this.grado=eval.getGradoAcademico();
+        this.estado=eval.getEstado();        
+    }
+    public void update(){
+        Docente d=new Docente();
+                d.setCi(this.ci);
+                d.setGradoAcademico(this.grado);
+                d.setEstado(this.estado);                
+        docenteDAO.update(d);
+    }
+    public void cancel(){
+        this.ci=this.estado=this.grado="";
     }
     /**
      * @return the personaDAO
@@ -68,9 +86,9 @@ public class DocenteBean implements Serializable{
      */
     public List<Persona> getDocenteList() {
         List<Object[]> x=personaDAO.getDocente();
-        if(docenteList==null) 
-            docenteList=new ArrayList<Persona>(); 
-        else 
+        if(docenteList==null)
+            docenteList=new ArrayList();
+        else
             docenteList.clear();
         for (Object[] e : x) {
             Persona y=(Persona) e[0];
@@ -81,7 +99,7 @@ public class DocenteBean implements Serializable{
     }
 
     /**
-     * @param docente the docente to set
+     * @param docenteList the docente to set
      */
     public void setDocenteList(List<Persona> docenteList) {
         this.docenteList = docenteList;
@@ -143,4 +161,22 @@ public class DocenteBean implements Serializable{
     public void setUserList(List<Persona> userList) {
         this.userList = userList;
     }
+
+    /**
+     * @return the estado
+     */
+    public String getEstado() {
+        return estado;
+    }
+
+    /**
+     * @param estado the estado to set
+     */
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+    public List<Persona> getUsers(){    
+        return docenteDAO.getUsers();
+    }
+    
 }

@@ -1,0 +1,183 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:p="http://primefaces.org/ui">    
+   
+    <body>        
+        <ui:composition template="./../plantillas/plantilla.xhtml">
+            <ui:define name="right">
+                right
+            </ui:define>
+
+            <ui:define name="content">                
+                        <h:form id="table_years">                   
+                            <h:panelGrid id="id_chose" columns="4">
+                                <p:outputLabel style="font-weight: bold;" value="DOCENTE:"/>
+                                <p:outputLabel value="#{docenteEscalafonBean.dSelected.nombre}   #{docenteEscalafonBean.dSelected.apellido}"/>                                 
+                                <p:outputLabel style="font-weight: bold;" value="   Gestion:"/>
+                                <p:selectOneMenu value="vacio" style="width: 75px; font-size: 10px;">
+                                    <f:selectItem itemLabel="Selecione" itemValue=""  />
+                                    <f:selectItems value="#{docenteEscalafonBean.gestiones}"/>                                    
+                                    <p:ajax listener="#{docenteEscalafonBean.changeGestion}" update=":tabView, :tabView "  event="valueChange"  partialSubmit="true" process="@this"/>
+                                </p:selectOneMenu>                                                  
+                            </h:panelGrid>                                      
+                        </h:form>                
+                    
+                <p:tabView id="tabView" style="font-size: 10px; height: auto;"  cache="false" dynamic="true" >
+                <p:ajax event="tabChange" listener="#{docenteEscalafonBean.onTabChange}" update="@this" partialSubmit="true" process="@this"/>
+                   <p:tab id="tabMateria" title="Materias">    
+                        <h:form id="form_material_eval">
+                            <p:dataTable var="r" value="#{docenteEscalafonBean.materiaList}" editable="true" style="max-width: 80%;"  >
+                                <p:column headerText="Sigla" width="40">
+                                <h:outputText value="#{r.docenteRegistroMateria.materia.siglaMateria}" />
+                                </p:column>
+                                <p:column headerText="Nombre">
+                                    <h:outputText value="#{r.docenteRegistroMateria.materia.nombre}" />                                
+                                </p:column>
+                                <p:column headerText="Paralelo" width="40">
+                                    <h:outputText value="#{r.docenteRegistroMateria.paralelo}" />                                
+                                </p:column>
+                                <p:column headerText="Nota" width="40">                                    
+                                        <h:outputText value="#{r.nota}" />                                    
+                                </p:column>                                
+                         </p:dataTable>
+                        </h:form>                      
+                   </p:tab>  
+                    
+                   <p:tab title="Resolucion" id="tabResolucion">
+                       <h:form id="form_resolucion">
+                       <h:panelGrid columns="3" cellpadding="5">                
+                           <h:commandLink value="Documento Pdf" actionListener="#{docenteEscalafonBean.toPdf()}" target="_blank"/>
+                        </h:panelGrid>                           
+                           <pe:ckEditor readonly="true"  width="100%" height="5000" value="#{docenteEscalafonBean.resolucion}">                               
+                           </pe:ckEditor>
+                       </h:form>
+                       
+                   </p:tab>
+                    
+                    <p:tab id="id_cartilla" title="Cartilla y Escalafon">                        
+                           <p:panelGrid columns="4">                        
+                            <p:outputLabel value="Universidad:"/>
+                            <p:outputLabel value="#{docenteEscalafonBean.docenteEscalafon.carrera.facultad.universidad.nombre}"/>
+                            <p:outputLabel value="Gestion:"/>
+                            <p:outputLabel value="#{docenteEscalafonBean.gSelected}"/>
+                            <p:outputLabel value="Facultad:"/>
+                            <p:outputLabel value="#{docenteEscalafonBean.docenteEscalafon.carrera.facultad.nombre}"/>
+                            <p:outputLabel value="Categoria:"/>
+                            <p:outputLabel value="#{docenteEscalafonBean.docenteEscalafon.tipo}"/>
+                            <p:outputLabel value="Carrera:"/>
+                            <p:outputLabel value="#{docenteEscalafonBean.docenteEscalafon.carrera.nombre}"/>                        
+                            </p:panelGrid>  
+                           <h:form>   
+                               <h:panelGrid columns="2" style="height: auto; vertical-align: top;">                                  
+                                   <p:dataTable var="r" value="#{docenteEscalafonBean.contenidoCartillaList}" style="max-width: 100%; vertical-align: top; height: auto;">
+                                        <f:facet name="header">
+                                            <p:outputLabel value="Evaluacion"/>
+                                        </f:facet>
+                                   <p:column headerText="Sigla" width="40">                            
+                                       <h:outputText value="#{r.evaluacion.docenteRegistroMateria.materia.siglaMateria}" />                                
+                                        </p:column>
+                                   <p:column headerText="Materia">                            
+                                            <h:outputText value="#{r.evaluacion.docenteRegistroMateria.materia.nombre}" />                                
+                                        </p:column>
+                                   <p:column headerText="Paralelo" width="40">                            
+                                       <h:outputText value="#{r.evaluacion.docenteRegistroMateria.paralelo}" />                                
+                                        </p:column> 
+                                   <p:column headerText="Carga Horaria" width="40">                            
+                                            <h:outputText value="#{r.evaluacion.docenteRegistroMateria.horas}" />                                
+                                        </p:column> 
+                                        <p:column headerText="Puntaje Evaluacion" width="55">                            
+                                            <h:outputText value="#{r.puntajeEvaluacion}">
+                                                <f:convertNumber pattern="#0.00" locale="es_PR" groupingUsed="false"/>
+                                            </h:outputText>                                
+                                        </p:column> 
+                                        <p:column headerText="Parcial" width="40">                            
+                                            <h:outputText value="#{r.puntajeParcial}">
+                                                <f:convertNumber pattern="#0.00" locale="es_PR" groupingUsed="false"/>
+                                            </h:outputText>                                
+                                        </p:column>
+                                    <p:columnGroup type="footer">
+                                        <p:row>
+                                            <p:column colspan="3" style="text-align:right" footerText="T. Horas" />
+                                            <p:column>
+                                                <f:facet name="footer">
+                                                    <h:outputText value="#{docenteEscalafonBean.carSelected.totalHoras}">
+                                                        <f:convertNumber pattern="#0.00" locale="es_PR" groupingUsed="false"/>
+                                                    </h:outputText>
+                                                </f:facet>
+                                            </p:column>
+                                            
+                                            <p:column footerText="T. Parcial" />
+                                            <p:column>
+                                                <f:facet name="footer">
+                                                    <h:outputText value="#{docenteEscalafonBean.carSelected.totalParcial}">
+                                                        <f:convertNumber pattern="#0.00" locale="es_PR" groupingUsed="false"/>
+                                                    </h:outputText>
+                                                </f:facet>
+                                            </p:column>                                            
+                                        </p:row>
+                                        <p:row>
+                                            <p:column colspan="5" style="text-align:right" footerText="Promedio:" />                                         
+                                            <p:column>
+                                                <f:facet name="footer">
+                                                    <h:outputText value="#{docenteEscalafonBean.carSelected.notaPromedio}">
+                                                        <f:convertNumber pattern="#0.00" locale="es_PR" groupingUsed="false"/>
+                                                    </h:outputText>
+                                                </f:facet>
+                                            </p:column>                                            
+                                        </p:row>
+                                        <p:row>
+                                            <p:column colspan="5" style="text-align:right" footerText="Puntaje Escalafon:" />
+                                            <p:column>
+                                                <f:facet name="footer">
+                                                    <h:outputText value="#{docenteEscalafonBean.escalafon.puntaje}">
+                                                        <f:convertNumber pattern="#0" locale="es_PR" groupingUsed="false"/>
+                                                    </h:outputText>
+                                                </f:facet>
+                                            </p:column>                                            
+                                        </p:row>
+                                        <p:row>
+                                            <p:column colspan="6" style="text-align:right" footerText="Observaciones: #{docenteEscalafonBean.escalafon.obs}" />                                                                                       
+                                        </p:row>
+                                    </p:columnGroup>
+                                </p:dataTable>
+                                    
+                               <p:dataTable var="r" value="#{docenteEscalafonBean.escalafonList}" style="max-width: 250px; vertical-align: top;">
+                                        <f:facet name="header">
+                                            <p:outputLabel value="Historial"/>
+                                        </f:facet>
+                                   <p:column headerText="Gestion" width="40">                            
+                                            <h:outputText value="#{r.gestion}" />                                
+                                        </p:column>
+                                        <p:column headerText="Ev." width="40">
+                                            <h:outputText value="#{r.puntaje}">
+                                               <f:convertNumber pattern="#0" locale="es_PR" groupingUsed="false"/>
+                                            </h:outputText>                                                                       
+                                        </p:column>
+                                   <p:column headerText="Puntaje" width="40" style="text-align: right;"> 
+                                            <h:outputText value="#{r.puntajeAcumulado}">
+                                                <f:convertNumber pattern="#0" locale="es_PR" groupingUsed="false"/>
+                                            </h:outputText>                                                                           
+                                   </p:column>                                        
+                                </p:dataTable>
+                                  <f:facet name="footer"   >
+                                       <h:commandLink actionListener="#{docenteEscalafonBean.cartilla_docente_pdf()}" value="Documento PDF" target="_blank"/>
+                                    &nbsp; &nbsp;   <h:commandLink actionListener="#{docenteEscalafonBean.cartilla_pdf_todos()}" value="Documento PDF Todos" target="_blank"/>
+                                   </f:facet>
+                               </h:panelGrid> 
+                             
+                           </h:form>
+                       
+                   </p:tab>
+               </p:tabView>               
+                      
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,312 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">    
+    <body>
+        <ui:composition template="./../plantillas/plantilla.xhtml">
+            <ui:define name="right">
+                right
+            </ui:define>
+            <ui:define name="content">               
+                <h2 style="text-align: center;">Registro Materia</h2>
+                <h:form id="table_form_header">                   
+                   <p:panelGrid id="id_chose" columns="6">                        
+                            <p:outputLabel value="Universidad:"/>
+                            <p:selectOneMenu widgetVar="var_universidades"  id="universidades"  value="#{docenteRegistroMateriaBean.uSelected}" style="width: 200px;">                               
+                                <f:selectItem itemLabel="Seleccione" itemValue=""  />                                
+                                <f:selectItems  value="#{docenteRegistroMateriaBean.universidadList}" var="u" itemLabel="#{u.nombre}" itemValue="#{u.siglaUniversidad}"/>                               
+                                <p:ajax listener="#{docenteRegistroMateriaBean.changeUniversidad}" update="facultades,carreras, :form_registro"  event="valueChange"  partialSubmit="true" process="@this"/>
+                            </p:selectOneMenu>                            
+                            <p:outputLabel value="Facultad:"/>
+                            <p:selectOneMenu  widgetVar="var_facultades" id="facultades" value="#{docenteRegistroMateriaBean.fSelected}" required="true" style="width: 200px;" >                                
+                                <f:selectItem itemLabel="Seleccione" itemValue="#{0}"   />                                
+                                <f:selectItems  value="#{docenteRegistroMateriaBean.facultadList}" var="u" itemLabel="#{u.nombre}" itemValue="#{u.idFacultad}"/>                               
+                                <p:ajax listener="#{docenteRegistroMateriaBean.changeFacultad}" update="carreras, :form_registro" event="valueChange"  partialSubmit="true" process="@this"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel  value="Carrera:"/>
+                            <p:selectOneMenu   widgetVar="var_carreras" id="carreras" value="#{docenteRegistroMateriaBean.cSelected}" style="width: 200px;" required="true">
+                                <f:selectItem itemLabel="Seleccione" itemValue="#{0}" />                                
+                                <f:selectItems value="#{docenteRegistroMateriaBean.carreraList}" var="u" itemLabel="#{u.nombre}" itemValue="#{u.idCarrera}"/>                               
+                                <p:ajax listener="#{docenteRegistroMateriaBean.changeCarrera}" update=":createDialog_registro, :form_registro" event="valueChange"  partialSubmit="true" process="@this"/>
+                            </p:selectOneMenu>                       
+                    </p:panelGrid>                                      
+                </h:form>
+               <h:form id="form_registro">
+                   <p:dataTable var="r"  value="#{docenteRegistroMateriaBean.registroList}" rows="5" 
+                                         paginator="true"
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="5,10,15"  editable="true" paginatorPosition="top" currentPageReportTemplate="{startRecord}-{endRecord}" >
+                       <p:column headerText="Sigla:" filterBy="#{r.materia.siglaMateria}">
+                             <h:outputText value="#{r.materia.siglaMateria}" />                                
+                        </p:column>
+                        <p:column headerText="Nombre:" filterBy="#{r.materia.nombre}">                            
+                            <h:outputText value="#{r.materia.nombre}" />                                
+                        </p:column>
+                       <p:column headerText="Paralelo:" width="40">                            
+                            <h:outputText value="#{r.paralelo}" />                                
+                        </p:column>
+                        <p:column headerText="Nombre:" filterBy="#{r.docente.persona.nombre}" >                            
+                            <h:outputText value="#{r.docente.persona.nombre}"/>
+                        </p:column>
+                       <p:column headerText="Apellido:" filterBy="#{r.docente.persona.apellido}" >                            
+                            <h:outputText value="#{r.docente.persona.apellido}"/>
+                        </p:column>
+                        <p:column headerText="Periodo:" width="60">                            
+                            <h:outputText value="#{r.periodo}" />                                
+                        </p:column>
+                       <p:column headerText="Gestion:" filterBy="#{r.gestion}" width="110">                            
+                            <h:outputText value="#{r.gestion}" />                                
+                        </p:column>
+                       <p:column headerText="Opción"  width="60">   
+                            <p:commandButton icon="ui-icon-search" title="Ver Registro"   actionListener="#{docenteRegistroMateriaBean.detallarRegistro(r)}" update=":detalleForm_registro" oncomplete="PF('var_detalle_registro').show();" />
+                            <p:commandButton icon="ui-icon-trash " title="Eliminar Registro" actionListener="#{docenteRegistroMateriaBean.retirarRegistro(r)}" update=":form_registro"  oncomplete="PF('confirm_dialog').show();"/>
+                        </p:column>
+                        <f:facet  name="footer"  >                          
+                            <p:commandButton  actionListener="#{docenteRegistroMateriaBean.prepareRegistro()}" style="" icon="ui-icon-document" value="Añadir Nuevo" update=":createDialog_registro" oncomplete="PF('var_create_registro').show();"></p:commandButton>                         
+                        </f:facet>
+                     </p:dataTable>
+               </h:form>
+                 
+               
+               <p:dialog header="Crear Nuevo Registro" visible="false" resizable="true" widgetVar="var_create_registro" id="createDialog_registro" closable="false" modal="true" appendTo="@(body)">            
+                  <h:form id="createForm_registro">                   
+                    <p:panelGrid style="width: 100%" columnClasses="rightalign,leftalign"  >
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="C.I. Docente:" /> 
+                            </p:column>
+                            <p:column colspan="3" >
+                                <p:selectOneMenu value="#{docenteRegistroMateriaBean.registro.docente.ci}" filter="true" caseSensitive="false" style="width: 100%;" id="docentes" required="true">
+                                    <f:selectItem itemLabel="Seleccione" itemValue="" />                                
+                                    <f:selectItems value="#{docenteRegistroMateriaBean.docenteList}" var="u" itemLabel="#{u.ci}   #{u.nombre} #{u.apellido}" itemValue="#{u.ci}"/>                                                              
+                                </p:selectOneMenu>           
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Sigla Materia:" /> 
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu value="#{docenteRegistroMateriaBean.registro.materia.idMateria}" filter="true" caseSensitive="false" style="width: 200px;" id="materias" required="true">
+                                    <f:selectItem itemLabel="Seleccione" itemValue="" />                                
+                                    <f:selectItems value="#{docenteRegistroMateriaBean.materiaList}" var="u" itemLabel="#{u.siglaMateria}   #{u.nombre}" itemValue="#{u.idMateria}"/>                                                              
+                                </p:selectOneMenu>         
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="Paralelo:" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText  value="#{docenteRegistroMateriaBean.registro.paralelo}" required="true">
+                                    <f:validator validatorId="paraleloValidator"/>
+                                </p:inputText>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Periodo:"/>
+                            </p:column>
+                            <p:column>
+                                <p:inputText   value="#{docenteRegistroMateriaBean.registro.periodo}" required="true">
+                                    <f:validator validatorId="periodoValidator"/>
+                                </p:inputText>
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="Tipo Periodo:" /> 
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu  value="#{docenteRegistroMateriaBean.registro.tipoPeriodo}" id="periodos" required="true">                               
+                                    <f:selectItem itemLabel="Semestral" itemValue="SEMESTRAL" />                                
+                                    <f:selectItem itemLabel="Anual" itemValue="ANUAL" /> 
+                                </p:selectOneMenu>         
+                            </p:column>
+                        </p:row>                        
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Gestion:" /> 
+                            </p:column>
+                            <p:column>
+                                <p:inputText   value="#{docenteRegistroMateriaBean.registro.gestion}" required="true">
+                                    <f:validator validatorId="integerValidator"/>
+                                    <f:validateLongRange minimum="2000" maximum="2050" />
+                                </p:inputText>
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="Horas/Sem:" /> 
+                            </p:column>
+                            <p:column>
+                                <p:inputText  id="horas_sem"  value="#{docenteRegistroMateriaBean.registro.horas}" required="true">
+                                    <f:validator validatorId="integerValidator" />
+                                </p:inputText>
+                            </p:column>
+                        </p:row>   
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Fecha Inicio:" /> 
+                            </p:column>
+                            <p:column>
+                                <p:calendar pattern="dd/MM/yyyy" readonly="true" value="#{docenteRegistroMateriaBean.registro.fechaInicio}"/>          
+                            </p:column>
+
+                            <p:column>
+                                <h:outputText value="Fecha Fin:" /> 
+                            </p:column>
+                            <p:column>
+                                <p:calendar  pattern="dd/MM/yyyy" readonly="true"  value="#{docenteRegistroMateriaBean.registro.fechaFin}"/>          
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Item:" /> 
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu value="#{docenteRegistroMateriaBean.registro.item}" id="items" required="true">                               
+                                    <f:selectItem itemLabel="TITULAR" itemValue="TITULAR" />                                
+                                    <f:selectItem itemLabel="INVITADO" itemValue="INVITADO" /> 
+                                </p:selectOneMenu>  
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="Tipo Materia:" /> 
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu value="#{docenteRegistroMateriaBean.registro.tipoMateria}" id="tipos_materias" required="true">                               
+                                    <f:selectItem itemLabel="Docencia" itemValue="Docencia" />
+                                    <f:selectItem itemLabel="Laboratorio" itemValue="Laboratorio" />                                    
+                                </p:selectOneMenu>  
+                            </p:column>
+                        </p:row>
+                      
+                      <f:facet name="footer">
+                         <p:row>  
+                             <p:column colspan="4">
+                                <h:panelGroup layout="block" style="text-align: center; margin-left: auto; margin-right: auto;">
+                                    <p:commandButton  action="#{docenteRegistroMateriaBean.guardarRegistro()}" icon="ui-icon-check" validateClient="true" update=":form_registro, :createForm_registro" value="Crear"  oncomplete="if (!args.validationFailed) PF('var_create_registro').hide();"></p:commandButton>
+                                    <p:commandButton icon="ui-icon-cancel" update=":form_registro" value="Cancelar" oncomplete="PF('var_create_registro').hide();"></p:commandButton>
+                                </h:panelGroup>                                
+                            </p:column>
+                         </p:row>
+                      </f:facet>
+                   
+                    </p:panelGrid>                     
+                 
+                  </h:form>
+              </p:dialog>  
+                
+               
+                 
+               <p:dialog header="Detalle Registro" visible="false" resizable="true" widgetVar="var_detalle_registro" id="detalleDialog_registro" closable="false" modal="true" appendTo="@(body)">            
+                  <h:form id="detalleForm_registro">               
+                    <p:panelGrid style="width: 100%" columnClasses="rightalign,leftalign"  >
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="C.I. Docente:" /> 
+                            </p:column>
+                            <p:column colspan="3" >
+                                <h:outputText value="#{docenteRegistroMateriaBean.registro.docente.ci}" />                                
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Sigla Materia:" /> 
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{docenteRegistroMateriaBean.registro.materia.siglaMateria}"/>                                
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="Paralelo:" /> 
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{docenteRegistroMateriaBean.registro.paralelo}" />                                
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Periodo:" /> 
+                            </p:column>
+                            <p:column>
+                                <h:outputText   value="#{docenteRegistroMateriaBean.registro.periodo}"/>          
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="Tipo Periodo:" /> 
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{docenteRegistroMateriaBean.registro.tipoPeriodo}"/>                                
+                            </p:column>
+                        </p:row>                        
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Gestion:" /> 
+                            </p:column>
+                            <p:column>
+                                <h:outputText   value="#{docenteRegistroMateriaBean.registro.gestion}"/>          
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="Horas/Sem:" /> 
+                            </p:column>
+                            <p:column>
+                                <h:outputText  id="horas_sem"  value="#{docenteRegistroMateriaBean.registro.horas}"/>                                    
+                            </p:column>
+                        </p:row>   
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Fecha Inicio:" /> 
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{docenteRegistroMateriaBean.registro.fechaInicio}" />                                 
+                            </p:column>
+
+                            <p:column>
+                                <h:outputText value="Fecha Fin:" /> 
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{docenteRegistroMateriaBean.registro.fechaFin}" />                                
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Item:" /> 
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{docenteRegistroMateriaBean.registro.item}" />                                
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="Tipo Materia:" /> 
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{docenteRegistroMateriaBean.registro.tipoMateria}" /> 
+                            </p:column>
+                        </p:row>
+                      
+                      <f:facet name="footer">
+                         <p:row>  
+                             <p:column colspan="4">
+                                <h:panelGroup layout="block" style="text-align: center; margin-left: auto; margin-right: auto;">
+                                    <p:commandButton icon="ui-icon-cancel" update=":form_registro" value="Cerrar" oncomplete="PF('var_detalle_registro').hide();"></p:commandButton>
+                                </h:panelGroup>                                
+                            </p:column>
+                         </p:row>
+                      </f:facet>
+                   
+                    </p:panelGrid>                     
+                  </h:form>
+              </p:dialog>                  
+               
+               <p:confirmDialog id="id_confirm_dialog" message="Esta seguro de eliminar?" header="Confirmacion" severity="alert" closable="false"   widgetVar="confirm_dialog" appendTo="@(body)">     
+                   <h:form id="confirm_form">
+                       <p:commandButton value="Si" actionListener="#{docenteRegistroMateriaBean.retirarRegistro()}" update=":form_registro" oncomplete="PF('confirm_dialog').hide()"/>     
+                       <p:commandButton value="No" onclick="PF('confirm_dialog').hide();" type="button" />  
+                   </h:form>
+               </p:confirmDialog> 
+             
+               
+                      
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,29 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 05-oct-2015, 0:15:50
+    Author     : JORGE-HP
+*/
+
+            .header-class{
+                background-color: #ccccff;
+                border: .5px solid black;
+                font-weight: bold;   
+                text-align: center;
+                font-size: 10px;
+                vertical-align: middle;
+            }            
+            .row-class td{                
+                border: .5px solid black;  
+                word-wrap: break-word;
+                font-size: 10px;                
+            } 
+             
+            .table {                
+                border-collapse: collapse;                
+                table-layout: fixed;
+                white-space: nowrap;
+            }

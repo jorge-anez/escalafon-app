@@ -20,6 +20,6 @@ import org.springframework.stereotype.Component;
 public class InitBean implements Serializable{    
     public void start() throws IOException{    
         FacesContext context= FacesContext.getCurrentInstance();                        
-        context.getExternalContext().redirect("faces/crud/universidad.xhtml");
+        context.getExternalContext().redirect("faces/crud/welcome.xhtml");
     }
 }

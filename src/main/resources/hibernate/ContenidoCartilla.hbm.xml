@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 16-may-2015 14:51:41 by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-  <class name="dea.modelo.ContenidoCartilla" optimistic-lock="version" schema="public" table="contenido_cartilla">
+  <class name="dea.modelo.ContenidoCartilla" optimistic-lock="version" table="contenido_cartilla">
     <id name="idContenidoCartilla" type="long">
       <column name="id_contenido_cartilla"/>
       <generator class="assigned"/>

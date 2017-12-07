@@ -11,28 +11,27 @@
             <ui:define name="right">
                 right
             </ui:define>
-
             <ui:define name="content">                
-                <f:event type="preRenderView" listener="#{docenteEscalafonBean.reset()}" />
-               <p:outputLabel value="Registro"/>                
+               <f:event type="preRenderView" listener="#{docenteEscalafonBean.reset()}" />
+               <h2 style="text-align: center;">ESCALAFON DOCENTE</h2>               
                 <h:form id="table_header_escalafon">                   
                    <p:panelGrid id="id_chose" columns="6">
                         <f:facet  name="header"  ></f:facet>                           
                             <p:outputLabel value="Universidad:"/>
-                            <p:selectOneMenu widgetVar="var_universidades"  id="universidades" value="vacio" style="width: 200px;">                               
-                                <f:selectItem itemLabel="Seleccione" itemValue="vacio"  />                                
+                            <p:selectOneMenu widgetVar="var_universidades"  id="universidades" value="#{docenteEscalafonBean.uSelected}" style="width: 200px;">                               
+                                <f:selectItem itemLabel="Seleccione" itemValue="#{0}"  />                                
                                 <f:selectItems value="#{docenteEscalafonBean.universidadList}" var="u" itemLabel="#{u.nombre}" itemValue="#{u.siglaUniversidad}"/>                               
                                 <p:ajax listener="#{docenteEscalafonBean.changeUniversidad}" update="facultades,carreras, :form_escalafon_docente"  event="valueChange"  partialSubmit="true" process="@this"/>
                             </p:selectOneMenu>                            
                             <p:outputLabel value="Facultad:"/>
-                            <p:selectOneMenu widgetVar="var_facultades" id="facultades" value="vacio" required="true" style="width: 200px;" >                               
-                                <f:selectItem itemLabel="Seleccione" itemValue="vacio" />                                
+                            <p:selectOneMenu widgetVar="var_facultades" id="facultades" value="#{docenteEscalafonBean.fSelected}" required="true" style="width: 200px;" >                               
+                                <f:selectItem itemLabel="Seleccione" itemValue="#{0}" />                                
                                 <f:selectItems value="#{docenteEscalafonBean.facultadList}" var="u" itemLabel="#{u.nombre}" itemValue="#{u.idFacultad}"/>                               
                                 <p:ajax listener="#{docenteEscalafonBean.changeFacultad}" update="carreras, :form_escalafon_docente" event="valueChange"  partialSubmit="true" process="@this"/>
                             </p:selectOneMenu>
                             <p:outputLabel value="Carrera:"/>
-                            <p:selectOneMenu   value="vacio" style="width: 200px;" id="carreras" required="true">                               
-                                <f:selectItem itemLabel="Seleccione" itemValue="vacio" />                                
+                            <p:selectOneMenu  value="#{docenteEscalafonBean.cSelected}" style="width: 200px;" id="carreras" required="true">                               
+                                <f:selectItem itemLabel="Seleccione" itemValue="#{0}" />                                
                                 <f:selectItems value="#{docenteEscalafonBean.carreraList}" var="u" itemLabel="#{u.nombre}" itemValue="#{u.idCarrera}"/>                               
                                 <p:ajax listener="#{docenteEscalafonBean.changeCarrera}" update=":createDialog_registro, :form_escalafon_docente" event="valueChange"  partialSubmit="true" process="@this"/>
                             </p:selectOneMenu>                       
@@ -44,11 +43,14 @@
                                          paginator="true"
                                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                          rowsPerPageTemplate="5,10,15"  editable="true" paginatorPosition="top" currentPageReportTemplate="{startRecord}-{endRecord}" >
-                       <p:column headerText="C.I" filterBy="#{r.docente.persona.ci}">                            
+                       <p:column headerText="C.I" filterBy="#{r.docente.persona.ci}">
                              <h:outputText value="#{r.docente.persona.ci}" />                                
                         </p:column>
                        <p:column headerText="Nombre" filterBy="#{r.docente.persona.nombre}">                            
                             <h:outputText value="#{r.docente.persona.nombre}" />                                
+                        </p:column>
+                       <p:column headerText="Apellido" filterBy="#{r.docente.persona.apellido}">                            
+                            <h:outputText value="#{r.docente.persona.apellido}" />                                
                         </p:column>
                         <p:column headerText="Fecha Nac.">                            
                             <h:outputText value="#{r.fechaNacimiento}" />                                
@@ -63,8 +65,7 @@
                         <p:column headerText="Opciones"  style="width: 10% !important;" >   
                             <p:commandButton icon="ui-icon-pencil" title="Actualizar"  actionListener="#{docenteEscalafonBean.update(r)}" update=":updateDialog_registro" oncomplete="PF('var_update_registro').show();" />
                             <p:commandButton icon="ui-icon-document" title="Evaluacion Docente" actionListener="#{docenteEscalafonBean.evaluarDocente(r.docente.ci)}" update="" />
-                            <p:commandButton icon="ui-icon-trash" title="Eliminar Registro" actionListener="#{docenteEscalafonBean.retirarRegistro(r)}" update=":form_escalafon_docente"  oncomplete="PF('confirm_dialog').show();"/>
-                            
+                            <p:commandButton icon="ui-icon-trash" title="Eliminar Registro" actionListener="#{docenteEscalafonBean.retirarRegistro(r)}" update=":form_escalafon_docente"  oncomplete="PF('confirm_dialog').show();"/>                            
                         </p:column>
                         <f:facet  name="footer"  >                          
                             <p:commandButton actionListener="#{docenteEscalafonBean.prepareRegistro()}" update=":createDialog_registro" icon="ui-icon-document" value="Añadir Nuevo"  oncomplete="PF('var_create_registro').show();"></p:commandButton>                         
@@ -81,8 +82,8 @@
                             </p:column>
                             <p:column>
                                 <p:selectOneMenu value="#{docenteEscalafonBean.registro.docente.ci}" filter="true" style="width: 100%;" id="docentes" required="true">                               
-                                    <f:selectItem itemLabel="--Vacio--" itemValue="null" />                                
-                                    <f:selectItems value="#{docenteEscalafonBean.docenteList}" var="u" itemLabel="#{u.ci}--#{u.nombre}" itemValue="#{u.ci}"/>                                                              
+                                    <f:selectItem itemLabel="Seleccione" itemValue="" />                                
+                                    <f:selectItems value="#{docenteEscalafonBean.docenteList}" var="u" itemLabel="#{u.ci} #{u.nombre} #{u.apellido}" itemValue="#{u.ci}"/>
                                 </p:selectOneMenu>           
                             </p:column>
                         </p:row>
@@ -91,7 +92,7 @@
                                 <h:outputText value="Fecha de Nacimiento:" /> 
                             </p:column>
                             <p:column>
-                                <p:calendar  value="#{docenteEscalafonBean.registro.fechaNacimiento}"/>          
+                                <p:calendar pattern="dd/MM/yyyy" value="#{docenteEscalafonBean.registro.fechaNacimiento}" readonly="true"/>          
                             </p:column>
                         </p:row>
                         <p:row>
@@ -99,13 +100,15 @@
                                 <h:outputText value="E-mail:" /> 
                             </p:column>
                             <p:column>
-                                <p:inputText   value="#{docenteEscalafonBean.registro.correoElectronico}"/>          
+                                <p:inputText   value="#{docenteEscalafonBean.registro.correoElectronico}" required="true">
+                                    <f:validator validatorId="emailValidator"/>
+                                </p:inputText>
                             </p:column>                            
                         </p:row>                                             
                       <f:facet name="footer">
                          <p:row>  
                              <p:column colspan="4">
-                                 <p:commandButton action="#{docenteEscalafonBean.guardarRegistro()}" icon="ui-icon-check" update=":form_escalafon_docente" value="Crear" oncomplete="PF('var_create_registro').hide();"></p:commandButton>                                
+                                <p:commandButton action="#{docenteEscalafonBean.guardarRegistro()}" icon="ui-icon-check" update=":form_escalafon_docente, :createForm_registro" value="Crear" oncomplete="if (!args.validationFailed) PF('var_create_registro').hide();"></p:commandButton>                                
                                 <p:commandButton icon="ui-icon-cancel" update=":form_escalafon_docente" value="Cancelar" oncomplete="PF('var_create_registro').hide();"></p:commandButton>            
                             </p:column>
                          </p:row>
@@ -140,7 +143,7 @@
                                 <p:outputLabel value="Fecha Nacimiento:" /> 
                             </p:column>
                             <p:column>
-                                <p:calendar  value="#{docenteEscalafonBean.registro.fechaNacimiento}"/>          
+                                <p:calendar pattern="dd/MM/yyyy" value="#{docenteEscalafonBean.registro.fechaNacimiento}" readonly="true"/>
                             </p:column>
                         </p:row>
                         <p:row>
@@ -148,7 +151,9 @@
                                 <h:outputText value="E-mail:" /> 
                             </p:column>
                             <p:column>
-                                <p:inputText   value="#{docenteEscalafonBean.registro.correoElectronico}"/>          
+                                <p:inputText   value="#{docenteEscalafonBean.registro.correoElectronico}">
+                                    <f:validator validatorId="emailValidator"/>
+                                </p:inputText>
                             </p:column>                            
                         </p:row> 
                         <p:row>
@@ -162,7 +167,7 @@
                       <f:facet name="footer">
                          <p:row>  
                              <p:column colspan="2">
-                                <p:commandButton action="#{docenteEscalafonBean.update()}" icon="ui-icon-check" update=":form_escalafon_docente" value="Guardar Cambios" oncomplete="PF('var_update_registro').hide();"></p:commandButton>                                
+                                <p:commandButton action="#{docenteEscalafonBean.update()}" icon="ui-icon-check" update=":form_escalafon_docente, :updateForm_registro" value="Guardar Cambios" oncomplete="if (!args.validationFailed) PF('var_update_registro').hide();"></p:commandButton>                                
                                 <p:commandButton icon="ui-icon-cancel" update=":form_escalafon_docente" value="Cancelar" oncomplete="PF('var_update_registro').hide();"></p:commandButton>            
                             </p:column>
                          </p:row>
@@ -170,19 +175,15 @@
                    
                     </p:panelGrid>                     
                   </h:form>
-              </p:dialog>            
+              </p:dialog>
                
                <p:confirmDialog id="id_confirm_dialog" message="Esta seguro de eliminar?" header="Confirmacion" severity="alert" closable="false"   widgetVar="confirm_dialog" appendTo="@(body)">     
                    <h:form id="confirm_form">
                        <p:commandButton value="Si" actionListener="#{docenteEscalafonBean.retirarRegistro()}" update=":form_escalafon_docente" oncomplete="PF('confirm_dialog').hide()"/>     
                        <p:commandButton value="No" onclick="PF('confirm_dialog').hide();" type="button" />  
                    </h:form>
-               </p:confirmDialog> 
-             
-               
-                      
+               </p:confirmDialog>                      
             </ui:define>
-
         </ui:composition>
 
     </body>

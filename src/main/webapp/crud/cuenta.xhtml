@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">    
+    <body>
+
+        <ui:composition template="./../plantillas/plantilla.xhtml">
+
+            <ui:define name="top">
+                top
+            </ui:define>
+
+            <ui:define name="bottom">
+                bottom
+            </ui:define>          
+
+            <ui:define name="right">
+                right
+            </ui:define>
+
+            <ui:define name="content">              
+                <p:tooltip />
+                <h:form id="cuenta_form">                    
+                    <p:panel header="Datos" style="max-width: 400px;">                        
+                        <p:messages id="messages" showDetail="true" autoUpdate="true" closable="false" />
+                        <h:panelGrid columns="2">
+                                    <h:outputText value="Nombre:" />                             
+                                    <p:inputText id="nombre" value="#{clienteBean.pSelected.nombre}" required="true"/>
+                                    <h:outputText value="Apellido:" />                            
+                                    <p:inputText  id="apellido" value="#{clienteBean.pSelected.apellido}" required="true"/>
+                                    <h:outputText value="Actual Contraseña:" />
+                                    
+                                    <p:password  id="password_old"  value="#{clienteBean.password_old}" required="true" label="Actual Contraseña" autocomplete="off"/>
+                                    <h:outputText value="Nueva Contraseña:" />                            
+                                    <p:password id="password1" value="#{clienteBean.password_new}" match="password2" required="true" label="Nueva Contraseña" autocomplete="off"/>
+                                    <h:outputText value="Confirmar Contraseña:" />                            
+                                    <p:password id="password2" value="#{clienteBean.password_new}" required="true" label="Confirmar Contraseña" autocomplete="off"/>                                                                             
+                        </h:panelGrid>   
+                        <f:facet name="footer">   
+                            <h:panelGroup layout="block" style="text-align: center; margin-left: auto; margin-right: auto;">
+                                <p:commandButton action="#{clienteBean.updateUser}" ajax="true" icon="ui-icon-check" id="update_cuenta" update="nombre,apellido,password1,password2,password_old" value="Actualizar"/>
+                            </h:panelGroup>
+                        </f:facet> 
+                    </p:panel>
+            </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

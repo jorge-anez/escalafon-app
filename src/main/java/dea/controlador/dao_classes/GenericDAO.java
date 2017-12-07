@@ -7,7 +7,6 @@
 package dea.controlador.dao_classes;
 
 
-import dea.controlador.HibernateUtil;
 import dea.controlador.dao_interfaces.GenericDAOInterface;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
@@ -24,19 +23,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 //@Service
-@Repository
+//@Repository
 //@Component
 //@Transactional
 //@SuppressWarnings("unchecked")
 public abstract class GenericDAO<T, ID extends Serializable> implements GenericDAOInterface<T, ID>{
     private Class<T> type;
    @Autowired
-  // @Qualifier("sessionFactory")
     private SessionFactory sessionFactory;
-
-   
-   
-    
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
@@ -45,7 +39,6 @@ public abstract class GenericDAO<T, ID extends Serializable> implements GenericD
        //     throw new IllegalStateException("SessionFactory es Nullo");
         return sessionFactory;
     }
-
     public Class<T> getType() {
         return type;
     }    
@@ -58,7 +51,8 @@ public abstract class GenericDAO<T, ID extends Serializable> implements GenericD
     public Session getSession() throws HibernateException {         
         Session sess = null;       
         try {         
-            sess = sessionFactory.getCurrentSession();  
+            sess =sessionFactory.isClosed()?sessionFactory.openSession():sessionFactory.getCurrentSession();
+            //sess = sessionFactory.getCurrentSession();            
             return sess;
         } catch (HibernateException he) {  
             System.out.println("ocurrio un error con: "+he.getMessage());
@@ -72,7 +66,7 @@ public abstract class GenericDAO<T, ID extends Serializable> implements GenericD
         Transaction trans=session.beginTransaction();        
           session.save(x);
            //session.saveOrUpdate(x);
-//            session.load(type, (Serializable) x);
+//            session.load(type, (Serializable) x);          
         trans.commit();
         
        // this.getSessionFactory().getCurrentSession().saveOrUpdate(x);
@@ -99,8 +93,16 @@ public abstract class GenericDAO<T, ID extends Serializable> implements GenericD
             
         trans.commit();
     }
+    @Transactional
+    public void merge(T obj) {
+        Session session=this.getSession();       
+        Transaction trans=session.beginTransaction();        
+            session.merge(obj);            
+        trans.commit();
+    }
     
     @Transactional
+
     public void delete(T obj) {
         Session session=this.getSession();       
         Transaction trans=session.beginTransaction();        
@@ -110,8 +112,14 @@ public abstract class GenericDAO<T, ID extends Serializable> implements GenericD
 
     @Transactional(readOnly = true)
     public List<T> readAll() {
-       List<T> u= (List<T>)this.getSessionFactory().openSession().createCriteria(type).list();
+       //List<T> u= (List<T>)this.getSessionFactory().openSession().createCriteria(type).list();
+        Session session=this.getSession();
+        Transaction trans=session.beginTransaction();        
+            List<T> u= (List<T>)session.createCriteria(type).list();
+        trans.commit();    
        return u;
+        //return (T) getSessionFactory().getCurrentSession().get(getType(), id);
     }
+    
 }
 

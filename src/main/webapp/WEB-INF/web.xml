@@ -26,10 +26,6 @@
         <param-value>classpath*:spring-context.xml</param-value>
     </context-param>
 
-    <context-param>
-        <param-name>javax.faces.CONFIG_FILES</param-name>
-        <param-value>classpath*:faces-config.xml</param-value>
-    </context-param>
 
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>

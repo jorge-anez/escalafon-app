@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 16-may-2015 14:51:41 by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-  <class name="dea.modelo.Persona" optimistic-lock="version" schema="public" table="persona">
+  <class name="dea.modelo.Persona" optimistic-lock="version" table="persona">
     <id name="ci" type="string">
       <column length="20" name="ci"/>
       <generator class="assigned"/>
@@ -25,9 +25,16 @@
     <property name="theme" type="string">
       <column length="100" name="theme"/>
     </property>
+    
+    <set name="perfilPersonas" table="perfil_persona" inverse="true" lazy="false" fetch="select" cascade="all-delete-orphan">
+            <key>
+                <column name="ci" length="20" />
+            </key>
+            <one-to-many class="dea.modelo.PerfilPersona" />
+    </set>
     <one-to-one class="dea.modelo.Docente" name="docente"/>
     <one-to-one class="dea.modelo.Estudiante" name="estudiante"/>
-    <one-to-one class="dea.modelo.AdministradorCoordinador" name="administradorCoordinador"/>
-    <one-to-one class="dea.modelo.AdministradorDirector" name="administradorDirector"/>
+    <one-to-one class="dea.modelo.AdministradorCoordinador" name="administradorCoordinador" lazy="false" fetch="select" cascade="all-delete-orphan"/>
+    <one-to-one class="dea.modelo.AdministradorDirector" name="administradorDirector" lazy="false" fetch="select" cascade="all-delete-orphan"/>
   </class>
 </hibernate-mapping>

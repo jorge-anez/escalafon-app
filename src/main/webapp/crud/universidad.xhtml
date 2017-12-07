@@ -22,10 +22,9 @@
                 right
             </ui:define>
 
-            <ui:define name="content">                
-                
-            <p:outputLabel value="Universidades"  />        
-              
+            <ui:define name="content">    
+              <p:tooltip />
+              <h2 style="text-align: center;">UNIVERSIDADES</h2>
                <h:form id="table_form">                    
                     <p:dataTable  var="u" value="#{universidadBean.universidadList}" rows="10"
                                          paginator="true"
@@ -45,9 +44,9 @@
                                     <p:inputText value="#{u.nombre}" /> 
                                 </f:facet> 
                            </p:cellEditor> 
-                        </p:column >
+                        </p:column>
                         
-                        <p:column headerText="Acciones"  style="width: 14% !important;" >   
+                        <p:column headerText="Opcion"  style="width: 14% !important;" >   
                             <p:commandButton icon="ui-icon-search" title="Ver #{u.nombre}" actionListener="#{universidadBean.viewItem(u)}"  update=":viewDialog, :table_form" oncomplete="PF('var_view_dialog').show();" />
                             <p:commandButton icon="ui-icon-pencil" title="modificar #{u.nombre}" actionListener="#{universidadBean.updateItem(u)}" update=":editDialog" oncomplete="PF('var_edit_dialog').show();" />
                             <p:commandButton icon="ui-icon-trash " title="Eliminar #{u.nombre}" actionListener="#{universidadBean.removeItem(u)}" update=":confirm_form, :table_form"  oncomplete="PF('confirm_dialog').show();"/>
@@ -55,12 +54,9 @@
                         
                         
                         <f:facet  name="footer"  >                          
-                            <p:commandButton style="" icon="ui-icon-document" value="Añadir Nuevo" actionListener="#{universidadBean.createItem()}" update=":createForm, :table_form" oncomplete="PF('var_create_dialog').show();"></p:commandButton>                         
+                            <p:commandButton style="" icon="ui-icon-document" value="Añadir Nuevo" actionListener="#{universidadBean.createItem()}" update=":createForm, :table_form" oncomplete="PF('var_create_dialog').show();"></p:commandButton>
                         </f:facet>
-                    </p:dataTable>
-                   
-                  
-                   
+                    </p:dataTable>                   
                 </h:form>
                 
                <p:dialog header="Modificar" resizable="true" widgetVar="var_edit_dialog" id="editDialog" closable="false" modal="true" appendTo="@(body)">            
@@ -76,16 +72,18 @@
                             <h:outputText value="Nombre:" /> 
                         </p:column>
                         <p:column>
-                            <p:inputText  size="50" value="#{universidadBean.uSelected.nombre}"/>          
+                            <p:inputText id="nombre_universidad_e" size="50" value="#{universidadBean.uSelected.nombre}">
+                                <f:validator validatorId="wordValidator"/>
+                            </p:inputText>
                         </p:column>                                                        
                       <f:facet name="footer">
-                       <p:commandButton actionListener="#{universidadBean.updateItem}" icon="ui-icon-check" update=":table_form" value="Aceptar" oncomplete="PF('var_edit_dialog').hide();"></p:commandButton>            
+                       <p:commandButton actionListener="#{universidadBean.updateItem}" icon="ui-icon-check" update=":table_form,nombre_universidad_e" value="Aceptar" oncomplete="if (!args.validationFailed) PF('var_create_dialog').hide();"></p:commandButton>
                        <p:button icon="ui-icon-cancel" value="Cancelar"></p:button>
                       </f:facet>
                     </p:panelGrid>                     
                   </h:form>
               </p:dialog>   
-               
+              
            
                <p:dialog header="Ver Detalles" resizable="true" widgetVar="var_view_dialog" id="viewDialog" closable="false" modal="true" appendTo="@(body)">       
                     <p:panelGrid columns="2" columnClasses="rightalign,leftalign"  >
@@ -109,23 +107,27 @@
              
                
                <p:dialog header="Crear Nuevo" resizable="true" widgetVar="var_create_dialog" id="createDialog" closable="false" modal="true" appendTo="@(body)">            
-                  <h:form id="createForm">
+                  <h:form id="createForm">                    
                     <p:panelGrid columns="2" style="width: 100%" columnClasses="rightalign,leftalign"  >
                         <p:column>
                             <h:outputText value="Sigla:" /> 
                         </p:column>
                          <p:column>
-                            <p:inputText  size="50" value="#{universidadBean.uSelected.siglaUniversidad}"/>          
+                             <p:inputText id="sigla_universidad_n"  size="50" value="#{universidadBean.uSelected.siglaUniversidad}" required="true">
+                                <f:validator validatorId="wordValidator"/>
+                             </p:inputText>
                         </p:column>
                         <p:column width="50%">
                             <h:outputText value="Nombre:" /> 
                         </p:column>
-                        <p:column>
-                            <p:inputText  size="50" value="#{universidadBean.uSelected.nombre}"/>          
+                        <p:column>                            
+                            <p:inputText  id="nombre_universidad_n" size="50" value="#{universidadBean.uSelected.nombre}" required="true"  validatorMessage="Error de entreda">
+                                <f:validator validatorId="wordValidator"/>
+                            </p:inputText>                            
                         </p:column>                                                        
                       <f:facet name="footer">
-                       <p:commandButton actionListener="#{universidadBean.createItem(true)}" icon="ui-icon-check" update=":table_form" value="Aceptar" oncomplete="PF('var_create_dialog').hide();"></p:commandButton>            
-                       <p:button icon="ui-icon-cancel" value="Cancelar"></p:button>
+                          <p:commandButton  ajax="true" actionListener="#{universidadBean.createItem(true)}" validateClient="true" icon="ui-icon-check" update=":table_form,nombre_universidad_n,sigla_universidad_n" value="Aceptar" oncomplete="if (!args.validationFailed) PF('var_create_dialog').hide();"></p:commandButton>
+                            <p:button icon="ui-icon-cancel" value="Cancelar"></p:button>
                       </f:facet>
                     </p:panelGrid>                     
                   </h:form>

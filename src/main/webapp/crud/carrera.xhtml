@@ -10,18 +10,7 @@
         <ui:composition template="./../plantillas/plantilla.xhtml">
 
             <ui:define name="top">
-            <f:event type="preRenderView" listener="#{checkLogged.isLogged}" />
-                
-                <p:panel id="dialog">                       
-                        <h:panelGrid columns="3" columnClasses="rightalign,leftalign,leftalign">
-                            <h:outputLabel for="username" value="Usuario:"/>
-                            <p:outputLabel id="username" value="#{personaBean.nombre}  #{personaBean.apellido}"/>                            
-                                                                                                          
-                        </h:panelGrid>
-                     <h:form>
-                     <p:commandLink value="Salir" action="#{personaBean.logout()}" ajax="false"/>
-                     </h:form>
-                </p:panel>
+                top
             </ui:define>
 
             <ui:define name="bottom">
@@ -32,58 +21,42 @@
                 right
             </ui:define>
 
-            <ui:define name="content">                
-                
-               <p:outputLabel value="Carreras"  />        
-              
+            <ui:define name="content">      
+               <h2 style="text-align: center;">CARRERAS</h2>
                <h:form id="table_form_header">                   
                    <p:panelGrid id="id_chose" columns="6">
                         <f:facet  name="header"  ></f:facet>                           
                             <p:outputLabel value="Universidad:"/>
-                            <p:selectOneMenu widgetVar="var_universidades"  id="universidades" value="vacio" style="width: 200px;">                               
-                                <f:selectItem itemLabel="--Vacio--" itemValue="vacio"  />                                
+                            <p:selectOneMenu widgetVar="var_universidades"  id="universidades" value="#{carreraBean.uSelected}" style="width: 200px;">                               
+                                <f:selectItem itemLabel="Seleccione" itemValue=""  />
                                 <f:selectItems value="#{carreraBean.universidadList}" var="u" itemLabel="#{u.nombre}" itemValue="#{u.siglaUniversidad}"/>                               
                                 <p:ajax listener="#{carreraBean.changeUniversidad}" update="facultades,:table_form_carrera"  event="valueChange"  partialSubmit="true" process="@this"/>
                             </p:selectOneMenu>                            
                             <p:outputLabel value="Facultad:"/>
-                            <p:selectOneMenu widgetVar="var_facultades" id="facultades" value="vacio" required="true" style="width: 200px;" >                               
-                                <f:selectItem itemLabel="--Vacio--" itemValue="vacio" />                                
+                            <p:selectOneMenu widgetVar="var_facultades" id="facultades" value="#{carreraBean.fSelected}" required="true" style="width: 200px;" >                               
+                                <f:selectItem itemLabel="Seleccione" itemValue="#{0}" />                                
                                 <f:selectItems value="#{carreraBean.facultadList}" var="u" itemLabel="#{u.nombre}" itemValue="#{u.idFacultad}"/>                               
                                 <p:ajax listener="#{carreraBean.changeFacultad}" update=":table_form_carrera" event="valueChange"  partialSubmit="true" process="@this"/>
                             </p:selectOneMenu>                                                  
                     </p:panelGrid>                                      
                 </h:form> 
                
-               <h:form id="table_form_carrera" >  
-                
+               <h:form id="table_form_carrera" >                  
                    <p:dataTable  var="c" value="#{carreraBean.carreraList}" rows="10"
                                          paginator="true"
                                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                         rowsPerPageTemplate="5,10,15"  editable="true" paginatorPosition="top" currentPageReportTemplate="{startRecord}-{endRecord}" >
-                                        
-                        
+                                         rowsPerPageTemplate="5,10,15"  editable="true" paginatorPosition="top" currentPageReportTemplate="{startRecord}-{endRecord}" >                        
                         <p:column headerText="Sigla">                            
-                                    <h:outputText value="#{c.siglaCarrera}" />                                
+                            <h:outputText value="#{c.siglaCarrera}" />                                
                         </p:column>
-
-                        <p:column headerText="Nombre">
-                           <p:cellEditor>                             
-                                <f:facet name="output"> 
-                                    <h:outputText value="#{c.nombre}" />
-                                </f:facet> 
-                                 <f:facet name="input"> 
-                                    <p:inputText value="#{c.nombre}" /> 
-                                </f:facet> 
-                           </p:cellEditor> 
-                        </p:column >
-                        
-                        <p:column headerText="Acciones"  style="width: 14% !important;" >   
+                        <p:column headerText="Nombre">                                
+                            <h:outputText value="#{c.nombre}" />
+                        </p:column >                        
+                        <p:column headerText="Opción"  style="width: 14% !important;" >   
                             <p:commandButton icon="ui-icon-search" title="Ver #{c.nombre}" actionListener="#{carreraBean.viewItem(c)}"  update=":viewDialog, :table_form_carrera" oncomplete="PF('var_view_dialog').show();" />
                             <p:commandButton icon="ui-icon-pencil" title="modificar #{c.nombre}" actionListener="#{carreraBean.updateItem(c)}" update=":editDialog_carrera" oncomplete="PF('var_edit_dialog_carrera').show();" />
                             <p:commandButton icon="ui-icon-trash " title="Eliminar #{c.nombre}" actionListener="#{carreraBean.removeItem(c)}" update=":confirm_form, :table_form_carrera"  oncomplete="PF('confirm_dialog').show();"/>
-                        </p:column>   
-                        
-                        
+                        </p:column>                        
                         <f:facet  name="footer"  >                          
                             <p:commandButton style="" icon="ui-icon-document" value="Añadir Nuevo" actionListener="#{carreraBean.createItem()}" update=":createForm_carrera, :table_form_carrera" oncomplete="PF('var_create_dialog_carrera').show();"></p:commandButton>                         
                         </f:facet>
@@ -98,16 +71,18 @@
                             <h:outputText value="Sigla:" /> 
                         </p:column>
                         <p:column>
-                            <h:inputText value="#{carreraBean.cSelected.siglaCarrera}"/>
+                            <h:outputText value="#{carreraBean.cSelected.siglaCarrera}"/>
                         </p:column>
                         <p:column width="50%">
                             <h:outputText value="Nombre:" /> 
                         </p:column>
                         <p:column>
-                            <p:inputText  size="50" value="#{carreraBean.cSelected.nombre}"/>          
+                            <p:inputText  size="50" value="#{carreraBean.cSelected.nombre}" required="true">
+                                <f:validator validatorId="wordValidator"/>
+                            </p:inputText>
                         </p:column>                                                        
                       <f:facet name="footer">
-                       <p:commandButton actionListener="#{carreraBean.updateItem}" icon="ui-icon-check" update=":table_form_carrera" value="Aceptar" oncomplete="PF('var_edit_dialog_carrera').hide();"></p:commandButton>            
+                       <p:commandButton actionListener="#{carreraBean.updateItem}" icon="ui-icon-check" update=":table_form_carrera, :editForm" value="Aceptar" oncomplete="if (!args.validationFailed) PF('var_edit_dialog_carrera').hide();"></p:commandButton>
                        <p:button icon="ui-icon-cancel" value="Cancelar"></p:button>
                       </f:facet>
                     </p:panelGrid>                     
@@ -133,8 +108,7 @@
                             <p:button icon="ui-icon-cancel" value="Cerrar"></p:button>
                         </f:facet>
                     </p:panelGrid>                  
-              </p:dialog>
-             
+              </p:dialog>             
                
                <p:dialog header="Crear Nuevo" resizable="true" widgetVar="var_create_dialog_carrera" id="createDialog" closable="false" modal="true" appendTo="@(body)">            
                   <h:form id="createForm_carrera">
@@ -143,16 +117,20 @@
                             <h:outputText value="Sigla:" /> 
                         </p:column>
                          <p:column>
-                            <p:inputText  size="50" value="#{carreraBean.cSelected.siglaCarrera}"/>          
+                             <p:inputText  size="50" value="#{carreraBean.cSelected.siglaCarrera}" required="true">
+                                <f:validator validatorId="wordValidator"/>
+                             </p:inputText>
                         </p:column>
                         <p:column width="50%">
                             <h:outputText value="Nombre:" /> 
                         </p:column>
                         <p:column>
-                            <p:inputText  size="50" value="#{carreraBean.cSelected.nombre}"/>          
+                            <p:inputText  size="50" value="#{carreraBean.cSelected.nombre}" required="true">
+                                <f:validator validatorId="wordValidator"/>
+                            </p:inputText>
                         </p:column>                                                        
                       <f:facet name="footer">
-                       <p:commandButton actionListener="#{carreraBean.createItem(true)}" icon="ui-icon-check" update=":createForm_carrera, :table_form_carrera" value="Aceptar" oncomplete="PF('var_create_dialog_carrera').hide();"></p:commandButton>            
+                       <p:commandButton actionListener="#{carreraBean.createItem(true)}" icon="ui-icon-check" update=":createForm_carrera, :table_form_carrera" value="Aceptar" oncomplete="if (!args.validationFailed) PF('var_create_dialog_carrera').hide();"></p:commandButton>
                        <p:button icon="ui-icon-cancel" value="Cancelar"></p:button>
                       </f:facet>
                     </p:panelGrid>                     

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 30-sep-2015 12:35:25 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="dea.modelo.Perfil" table="perfil" optimistic-lock="version">
+        <id name="idPerfil" type="int">
+            <column name="id_perfil" />
+            <generator class="assigned" />
+        </id>
+        <property name="perfil" type="string">
+            <column name="perfil" length="50" />
+        </property>
+        <set name="menus" table="menu" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_perfil" />
+            </key>
+            <one-to-many class="dea.modelo.Menu" />
+        </set>
+        <set name="perfilPersonas" table="perfil_persona" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_perfil" />
+            </key>
+            <one-to-many class="dea.modelo.PerfilPersona" />
+        </set>
+    </class>
+</hibernate-mapping>

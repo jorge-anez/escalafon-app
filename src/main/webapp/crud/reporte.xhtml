@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">    
+    <body>
+
+        <ui:composition template="./../plantillas/plantilla.xhtml">
+
+            <ui:define name="top">
+             top
+            </ui:define>
+
+            <ui:define name="bottom">
+                bottom
+            </ui:define>           
+
+            <ui:define name="right">
+                right
+            </ui:define>
+
+            <ui:define name="content">                
+                <h2 style="text-align: center;">ESCALAFON DOCENTE</h2>
+                <h:form id="table_years">                   
+                            <h:panelGrid id="id_chose" columns="4">
+                                <p:outputLabel style="font-weight: bold;" value="Desde:"/>
+                                <p:selectOneMenu value="#{docenteEscalafonBean.from}" style="width: 75px; font-size: 10px;">
+                                    <f:selectItem itemLabel="Selecione" itemValue="0"  />
+                                    <f:selectItems value="#{docenteEscalafonBean.gestiones}"/>                                    
+                                    <p:ajax listener="#{docenteEscalafonBean.changeFrom}" update=":form_reporte"  event="valueChange"  partialSubmit="true" process="@this"/>
+                                </p:selectOneMenu>
+                                <p:outputLabel style="font-weight: bold;" value="Hasta:"/>
+                                <p:selectOneMenu value="#{docenteEscalafonBean.to}" style="width: 75px; font-size: 10px;">
+                                    <f:selectItem itemLabel="Selecione" itemValue="0"  />
+                                    <f:selectItems value="#{docenteEscalafonBean.gestiones}"/>                                    
+                                    <p:ajax listener="#{docenteEscalafonBean.changeTo}" update=":form_reporte"  event="valueChange"  partialSubmit="true" process="@this"/>
+                                </p:selectOneMenu>                                                  
+                            </h:panelGrid>                                      
+                </h:form>                
+               <h:form id="form_reporte" target="_blank"  >                   
+                   <p:dataTable id="table_reporte" style="font-size: 10px;" var="r" value="#{docenteEscalafonBean.reporteData}" resizableColumns="true" tableStyle="width:auto">
+                        <f:facet name="footer">
+                            <h:commandButton value="Documento Pdf" action="#{docenteEscalafonBean.reporteDataToPDF()}"  />                            
+                        </f:facet>
+                       <p:columns headerText="#{column.header}" value="#{docenteEscalafonBean.header}" var="column" columnIndexVar="colIndex" filterBy="#{r[column.index]}" filterable="#{column.filterable}">
+                           <h:outputText value="#{r[column.index]}" />
+                        </p:columns>
+                    </p:dataTable>
+                </h:form>                      
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

@@ -4,8 +4,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:p="http://primefaces.org/ui">
     
     <body>        
         <ui:composition template="./../plantillas/plantilla.xhtml">
@@ -13,90 +12,63 @@
                 right
             </ui:define>
 
-            <ui:define name="content">              
-                <p:panelGrid columns="3" rendered="#{!directorDEABean.render()}">
-                   <p:outputLabel value="No Esta asigando un director"/>                   
-               </p:panelGrid>
-                <h:form id="dir_form">
-                <p:panelGrid columns="2"  rendered="#{directorDEABean.render()}">
-                    <f:facet name="header">
-                        <p:outputLabel value="Datos Director DEA"/>
-                   </f:facet>
-                   <p:outputLabel value="Nombre:"/>
-                   <p:inputText value="#{directorDEABean.dir_dea.nombre}" disabled="true"/>
-                   <p:outputLabel value="Apellido:"/>
-                   <p:inputText value="#{directorDEABean.dir_dea.apellido}" disabled="true"/>
-                   <p:outputLabel value="Cuenta"/>
-                   <p:inputText value="#{directorDEABean.dir_dea.cuenta}" disabled="true"/>
-                   <p:outputLabel value="Password"/>
-                   <p:outputLabel value="**************"/>
-                   <p:outputLabel value="Grado Academico:"/>
-                   <p:inputText value="#{directorDEABean.dir_dea.docente.gradoAcademico}" disabled="true"/>
-                   <p:outputLabel value="Fecha Inicio:"/>
-                   <p:inputText value="#{directorDEABean.dir_dea.administradorDirector.fechaInicio}" disabled="true" />
-                   <p:outputLabel value="Fecha Fin:"/>
-                   <p:inputText value="#{directorDEABean.dir_dea.administradorDirector.fechaFin}" disabled="true"/>
-                   <f:facet name="footer">
-                       <p:commandButton action="#{directorDEABean.retirarCargo(directorDEABean.dir_dea)}" update="@all" value="Retirar Cargo"/>
-                   </f:facet>                   
-               </p:panelGrid>  
-               </h:form>
-                <h:form id="table_form_user" rendered="#{!directorDEABean.render()}" >                
-                           <p:dataTable  var="u" value="#{personaBean.users}" rows="5"
-                                                  paginator="true"
-                                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                                  rowsPerPageTemplate="5,10,15"  editable="true" paginatorPosition="bottom" currentPageReportTemplate="{startRecord}-{endRecord}" >
-
-
-                                <p:column styleClass="leftAlign" headerText="C.I." filterBy="#{u.ci}">                            
-                                             <h:outputText value="#{u.ci}" />                                
-                                 </p:column>
-                               <p:column headerText="Nombre" filterBy="#{u.nombre}">                            
-                                             <h:outputText value="#{u.nombre}" />                                
-                                 </p:column>
-                               <p:column headerText="Apellido" filterBy="#{u.apellido}">                            
-                                             <h:outputText value="#{u.apellido}" />                          
-                               </p:column>                       
-                                 <p:column headerText="Acciones"  style="width: 14% !important;" >   
-                                     <p:commandButton icon="ui-icon-search" value="Asignar" title="Asignar Director DEA #{u.nombre}" actionListener="#{directorDEABean.asignarDirDEA(u.ci)}"  update=":table_form_user" oncomplete="PF('var_asignar_dir').show()" />                            
-                                 </p:column>                       
-                             </p:dataTable>                   
-                         </h:form> 
-                   
+            <ui:define name="content">               
+                <h:form id="dir_form" >
+                    <p:panelGrid columns="2">
+                        <f:facet name="header">
+                            <p:outputLabel value="Datos Director DEA"/>
+                       </f:facet>                        
+                       <p:outputLabel value="Nombre:"/>
+                       <p:inputText value="#{directorDEABean.dir_dea.nombre}" readonly="true"/>
+                       <p:outputLabel value="Apellido:"/>
+                       <p:inputText value="#{directorDEABean.dir_dea.apellido}" readonly="true"/>
+                       <p:outputLabel value="Cuenta"/>
+                       <p:inputText value="#{directorDEABean.dir_dea.cuenta}" readonly="true"/>
+                       <p:outputLabel value="Password"/>
+                       <p:outputLabel value="**************"/>
+                       <p:outputLabel value="Grado Academico:"/>
+                       <p:inputText value="#{directorDEABean.dir_dea.docente.gradoAcademico}" readonly="true"/>
+                       <p:outputLabel value="Fecha Inicio:"/>
+                       <p:calendar pattern="dd/MM/yyyy" value="#{directorDEABean.dir_dea.administradorDirector.fechaInicio}" readonly="true"/>
+                       <p:outputLabel value="Fecha Fin:"/>
+                       <p:calendar pattern="dd/MM/yyyy" value="#{directorDEABean.dir_dea.administradorDirector.fechaFin}" readonly="true"/>
+                       <f:facet name="footer">                          
+                           <h:panelGroup layout="block" style="text-align: center; margin-left: auto; margin-right: auto;">
+                                <p:commandButton action="#{directorDEABean.nuevo()}" update=":asignarForm_dir" value="Nuevo Director" oncomplete="PF('var_asignar_dir').show();"/>                                
+                           </h:panelGroup>     
+                       </f:facet>                   
+                       
+                   </p:panelGrid>  
+               </h:form>            
                 
-                <p:dialog header="Fecha" resizable="true" widgetVar="var_asignar_dir" id="createDialog" closable="false" modal="true" appendTo="@(body)">            
+                <p:dialog header="Nuevo Director" resizable="true" widgetVar="var_asignar_dir" id="createDialog" closable="false" modal="true" appendTo="@(body)">            
                   <h:form id="asignarForm_dir">
-                    <p:panelGrid columns="2" style="width: 100%" columnClasses="rightalign,leftalign"  >
-                        <p:column >
-                            <h:outputText value="Fecha Inicio:" /> 
-                        </p:column>
-                         <p:column>
-                             <p:calendar  value="#{directorDEABean.fechaInicio}"/>          
-                        </p:column>
-                        <p:column width="50%">
-                            <h:outputText value="Fecha Fin:" /> 
-                        </p:column>
-                        <p:column>
-                            <p:calendar  value="#{directorDEABean.fechaFin}"/>        
-                        </p:column>                                                        
+                    <p:panelGrid columns="2" style="width: 100%" columnClasses="rightalign,leftalign"  >                       
+                            <h:outputText value="Usuario (C.I.):" />                       
+                            <p:selectOneMenu style="width: 100%"  value="#{directorDEABean.ci}" filter="true" id="docentes" required="true">
+                                         <f:selectItem itemLabel="Seleccione" itemValue="" />                                
+                                         <f:selectItems value="#{personaBean.users}"  var="u" itemLabel="#{u.ci} #{u.nombre} #{u.apellido}"  itemValue="#{u.ci}"/>                                                                                                      
+                            </p:selectOneMenu>                        
+                            <h:outputText value="Fecha Inicio:" />                        
+                             <p:calendar  pattern="dd/MM/yyyy" value="#{directorDEABean.fechaInicio}"/>                         
+                        
+                            <h:outputText value="Fecha Fin:"/>                        
+                            <p:calendar  pattern="dd/MM/yyyy" value="#{directorDEABean.fechaFin}"/>                       
                       <f:facet name="footer">
-                       <p:commandButton actionListener="#{directorDEABean.asignarDirDEA()}" icon="ui-icon-check" update="@all" value="Aceptar" oncomplete="PF('var_asignar_dir').hide();"></p:commandButton>            
-                       <p:button icon="ui-icon-cancel" value="Cancelar"></p:button>
+                          <h:panelGroup layout="block" style="text-align: center; margin-left: auto; margin-right: auto;">
+                            <p:commandButton actionListener="#{directorDEABean.asignarDirDEA()}" icon="ui-icon-check" update=":asignarForm_dir, :dir_form" value="Aceptar" oncomplete="PF('var_asignar_dir').hide();"></p:commandButton>            
+                            <p:button icon="ui-icon-cancel" value="Cancelar"></p:button>
+                          </h:panelGroup>
                       </f:facet>
                     </p:panelGrid>                     
                   </h:form>
               </p:dialog> 
                 
                         <p:confirmDialog id="id_confirm_dialog" message="Esta seguro de eliminar?" header="Confirmacion" severity="alert" closable="false"   widgetVar="confirm_dialog" appendTo="@(body)">     
-                            <h:form id="confirm_form">
-                                <p:commandButton value="Si" actionListener="#{personaBean.removeItem()}" update=":table_form_user" oncomplete="PF('confirm_dialog').hide()"/>     
+                            <h:form id="confirm_form">                                
                                 <p:commandButton value="No" onclick="PF('confirm_dialog').hide();" type="button" />  
                             </h:form>
                         </p:confirmDialog> 
-            
-               
-             
-               
                       
             </ui:define>
 

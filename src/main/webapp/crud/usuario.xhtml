@@ -7,55 +7,40 @@
       xmlns:p="http://primefaces.org/ui">
     
     <body>
-
         <ui:composition template="./../plantillas/plantilla.xhtml">
-
-           
-
-           
-            
-
             <ui:define name="right">
                 right
             </ui:define>
-
             <ui:define name="content">                
-                
-               <p:outputLabel value="Usuarios"  />        
-              
-                
-               <h:form id="table_form_user" >  
-                
+               <h2 style="text-align: center;">USUARIOS</h2>                
+               <h:form id="table_form_user">                
                    <p:dataTable  var="u" value="#{personaBean.users}" rows="5"
                                          paginator="true"
                                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                         rowsPerPageTemplate="5,10,15"  editable="true" paginatorPosition="top" currentPageReportTemplate="{startRecord}-{endRecord}" >
-                                             
-                        
-                        <p:column headerText="C.I.">                            
+                                         rowsPerPageTemplate="5,10,15"  editable="true" paginatorPosition="top" currentPageReportTemplate="{startRecord}-{endRecord}" >                        
+                        <p:column headerText="C.I." filterBy="#{u.ci}">                            
                                     <h:outputText value="#{u.ci}" />                                
                         </p:column>
-                        <p:column headerText="Nombre">                            
+                        <p:column headerText="Nombre" filterBy="#{u.nombre}">
                                     <h:outputText value="#{u.nombre}" />                                
                         </p:column>
-                        <p:column headerText="Apellido">                            
+                        <p:column headerText="Apellido" filterBy="#{u.apellido}">                            
                                     <h:outputText value="#{u.apellido}" />                                
                         </p:column>
                         
-                        <p:column headerText="Cuenta">                            
+                        <p:column headerText="Cuenta" filterBy="#{u.cuenta}">    
                                     <h:outputText value="#{u.cuenta}" />                                
                         </p:column>
-                        <p:column headerText="Password">                            
-                                    <h:outputText value="************" />                                
+                        <p:column headerText="Estado">                            
+                                    <h:outputText value="#{u.estado}" />                                
                         </p:column>
                        
-                        <p:column headerText="Acciones"  style="width: 14% !important;" >   
-                            <p:commandButton icon="ui-icon-search" title="Ver #{u.nombre}" actionListener="#{personaBean.viewItem(u)}"  update=":viewDialog_user, :table_form_user" oncomplete="PF('var_view_dialog').show();" />
+                        <p:column headerText="Opciones"  style="width: 14% !important;" >
                             <p:commandButton icon="ui-icon-pencil" title="modificar #{u.nombre}" actionListener="#{personaBean.updateItem(u)}" update=":editDialog_user" oncomplete="PF('var_edit_dialog_user').show();" />
+                            <p:commandButton icon="ui-icon-star" title="Restablecer Contraseña" actionListener="#{personaBean.restorePassword(u)}"/>
+                            <p:commandButton icon="ui-icon-check" title="Activar-Desactivar" actionListener="#{personaBean.activarDesactivar(u)}" update=":table_form_user"/>
                             <p:commandButton icon="ui-icon-trash " title="Eliminar #{u.nombre}" actionListener="#{personaBean.removeItem(u)}" update=":confirm_form, :table_form_user"  oncomplete="PF('confirm_dialog').show();"/>
-                        </p:column>   
-                        
-                        
+                        </p:column>                        
                         <f:facet  name="footer"  >                          
                             <p:commandButton style="" icon="ui-icon-document" value="Añadir Nuevo" actionListener="#{personaBean.createItem()}" update=":createForm_user, :table_form_user" oncomplete="PF('var_create_dialog_usuario').show();"></p:commandButton>                         
                         </f:facet>
@@ -65,45 +50,63 @@
                
                <p:dialog header="Modificar" resizable="true" widgetVar="var_edit_dialog_user" id="editDialog_user" closable="false" modal="true" appendTo="@(body)">            
                   <h:form id="editForm_user">
-                    <p:panelGrid columns="2" style="width: 100%" columnClasses="rightalign,leftalign"  >
-                        <p:column>
-                            <h:outputText value="C.I.:" /> 
-                        </p:column>
-                         <p:column>
-                             <p:outputLabel  value="#{personaBean.pSelected.ci}"/>          
-                        </p:column>
-                        <p:column>
-                            <h:outputText value="Nombre:" /> 
-                        </p:column>
-                        <p:column>
-                            <p:inputText  size="50" value="#{personaBean.pSelected.nombre}"/>          
-                        </p:column>   
+                    <p:panelGrid style="width: 100%" columnClasses="rightalign,leftalign"  >
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="C.I.:" /> 
+                            </p:column>
+                             <p:column>
+                                 <p:outputLabel value="#{personaBean.pSelected.ci}"/>
+                            </p:column>
+                        </p:row> 
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Nombre:" /> 
+                            </p:column>
+                            <p:column>
+                                <p:inputText  size="50" value="#{personaBean.pSelected.nombre}" required="true">
+                                    <f:validator validatorId="wordValidator"/>
+                                </p:inputText>
+                            </p:column>   
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Apellido:" /> 
+                            </p:column>
+                            <p:column>
+                                <p:inputText  size="50" value="#{personaBean.pSelected.apellido}" required="true">
+                                    <f:validator validatorId="wordValidator"/>
+                                </p:inputText>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Cuenta:" /> 
+                            </p:column>
+                            <p:column>
+                                <p:inputText  size="50" value="#{personaBean.pSelected.cuenta}" required="true">
+                                    <f:validator validatorId="wordValidator"/>
+                                </p:inputText>
+                            </p:column>
+                        </p:row>
                         
-                        <p:column>
-                            <h:outputText value="Apellido:" /> 
-                        </p:column>
-                        <p:column>
-                            <p:inputText  size="50" value="#{personaBean.pSelected.apellido}"/>          
-                        </p:column>
-                        
-                        <p:column>
-                            <h:outputText value="Cuenta:" /> 
-                        </p:column>
-                        <p:column>
-                            <p:inputText  size="50" value="#{personaBean.pSelected.cuenta}"/>          
-                        </p:column>
-                        
-                        <p:column>
-                            <h:outputText value="Password:" /> 
-                        </p:column>
-                        <p:column>
-                            <p:password  size="50" value="#{personaBean.pSelected.contrasenia}"/>          
-                        </p:column>                                                        
-                      <f:facet name="footer">
-                       <p:commandButton actionListener="#{personaBean.updateItem}" icon="ui-icon-check" update=":table_form_user" value="Aceptar" oncomplete="PF('var_edit_dialog_user').hide();"></p:commandButton>            
-                       <p:button icon="ui-icon-cancel" value="Cancelar"></p:button>
-                      </f:facet>
-                    </p:panelGrid>                     
+                        <p:row>
+                            <p:column colspan="2">
+                                <p:selectManyCheckbox  value="#{personaBean.selectedPerfiles}" label="Perfil">
+                                    <f:selectItems value="#{personaBean.perfiles}"/>                                    
+                                </p:selectManyCheckbox>
+                            </p:column>                             
+                        </p:row>
+                         
+                         <f:facet name="footer">
+                             <p:row>
+                                 <p:column colspan="2" style="text-align: center;">
+                                    <p:commandButton actionListener="#{personaBean.updateItem}" icon="ui-icon-check" update=":table_form_user,:editForm_user" value="Aceptar" oncomplete="if (!args.validationFailed) PF('var_edit_dialog_user').hide();"></p:commandButton>
+                                    <p:commandButton actionListener="#{personaBean.cancel()}" icon="ui-icon-cancel" update=":table_form_user" value="Cancelar" oncomplete="PF('var_edit_dialog_user').hide();"></p:commandButton>                                    
+                                </p:column>
+                              </p:row>
+                        </f:facet>                        
+                    </p:panelGrid>                    
                   </h:form>
               </p:dialog>   
                
@@ -134,7 +137,7 @@
                             <h:outputText value="Cuenta:" /> 
                         </p:column>
                         <p:column>
-                            <p:outputLabel  value="#{personaBean.pSelected.cuenta}"/>          
+                            <p:outputLabel  value="#{personaBean.pSelected.cuenta}"/>
                         </p:column>
                         
                         <p:column>
@@ -153,49 +156,74 @@
                
                <p:dialog header="Crear Nuevo" resizable="true" widgetVar="var_create_dialog_usuario" id="createDialog_user" closable="false" modal="true" appendTo="@(body)">            
                   <h:form id="createForm_user">
-                    <p:panelGrid columns="2" style="width: 100%" columnClasses="rightalign,leftalign"  >
-                        <p:column>
-                            <h:outputText value="C.I.:" /> 
-                        </p:column>
-                         <p:column>
-                            <p:inputText  size="50" value="#{personaBean.pSelected.ci}"/>          
-                        </p:column>
-                        <p:column>
-                            <h:outputText value="Nombre:" /> 
-                        </p:column>
-                        <p:column>
-                            <p:inputText  size="50" value="#{personaBean.pSelected.nombre}"/>          
-                        </p:column>   
-                        
-                        <p:column>
-                            <h:outputText value="Apellido:" /> 
-                        </p:column>
-                        <p:column>
-                            <p:inputText  size="50" value="#{personaBean.pSelected.apellido}"/>          
-                        </p:column>
-                        
-                        <p:column>
-                            <h:outputText value="Cuenta:" /> 
-                        </p:column>
-                        <p:column>
-                            <p:inputText  size="50" value="#{personaBean.pSelected.cuenta}"/>          
-                        </p:column>
-                        
-                        <p:column>
-                            <h:outputText value="Password:" /> 
-                        </p:column>
-                        <p:column>
-                            <p:inputText  size="50" value="#{personaBean.pSelected.contrasenia}"/>          
-                        </p:column>
-                        
-                        
-                      <f:facet name="footer">
-                       <p:commandButton actionListener="#{personaBean.createItem(true)}" icon="ui-icon-check" update=":createDialog_user, :table_form_user" value="Aceptar" oncomplete="PF('var_create_dialog_materia').hide();"></p:commandButton>            
-                       <p:button icon="ui-icon-cancel" value="Cancelar"></p:button>
-                      </f:facet>
+                    <p:panelGrid style="width: 100%" columnClasses="rightalign,leftalign"  >
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="C.I.:" /> 
+                            </p:column>
+                             <p:column>
+                                 <p:inputText  size="50" value="#{personaBean.pSelected.ci}" required="true">
+                                     <f:validator validatorId="integerValidator"/>
+                                 </p:inputText>
+                            </p:column>
+                        </p:row> 
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Nombre:" /> 
+                            </p:column>
+                            <p:column>
+                                <p:inputText  size="50" value="#{personaBean.pSelected.nombre}" required="true">
+                                    <f:validator validatorId="wordValidator"/>
+                                </p:inputText>
+                            </p:column>   
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Apellido:" /> 
+                            </p:column>
+                            <p:column>
+                                <p:inputText  size="50" value="#{personaBean.pSelected.apellido}" required="true">
+                                    <f:validator validatorId="wordValidator"/>
+                                </p:inputText>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Cuenta:"/> 
+                            </p:column>
+                            <p:column>
+                                <p:inputText  size="50" value="#{personaBean.pSelected.cuenta}" required="true">
+                                    <f:validator validatorId="wordValidator"/>
+                                </p:inputText>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Password:" /> 
+                            </p:column>
+                            <p:column>
+                                <p:inputText  size="50" value="#{personaBean.pSelected.contrasenia}" required="true"/>
+                            </p:column>   
+                        </p:row>
+                        <p:row>
+                            <p:column colspan="2">
+                                <p:selectManyCheckbox  value="#{personaBean.selectedPerfiles}" label="Perfil">
+                                    <f:selectItems value="#{personaBean.perfiles}"/>
+                                </p:selectManyCheckbox>
+                            </p:column>                             
+                        </p:row>
+                         
+                         <f:facet name="footer">
+                             <p:row>
+                                 <p:column colspan="2" style="text-align: center;">
+                                    <p:commandButton actionListener="#{personaBean.createItem(true)}" icon="ui-icon-check" update=":createForm_user, :table_form_user" value="Aceptar" oncomplete="if (!args.validationFailed) PF('var_create_dialog_usuario').hide();"></p:commandButton>
+                                    <p:commandButton actionListener="#{personaBean.cancel()}" icon="ui-icon-cancel" update=":createForm_user, :table_form_user" value="Cancelar" oncomplete="PF('var_create_dialog_usuario').hide();"></p:commandButton>                                    
+                                </p:column>
+                              </p:row>
+                        </f:facet>                        
                     </p:panelGrid>                     
                   </h:form>
-              </p:dialog>               
+              </p:dialog>
                
                
                
@@ -204,11 +232,7 @@
                        <p:commandButton value="Si" actionListener="#{personaBean.removeItem()}" update=":table_form_user" oncomplete="PF('confirm_dialog').hide()"/>     
                        <p:commandButton value="No" onclick="PF('confirm_dialog').hide();" type="button" />  
                    </h:form>
-               </p:confirmDialog> 
-           
-               
-             
-               
+               </p:confirmDialog>               
                       
             </ui:define>
 

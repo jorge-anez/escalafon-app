@@ -21,10 +21,10 @@ import javax.faces.validator.ValidatorException;
  *
  * @author Doppler
  */
-@FacesValidator("emailValidator") 
-public class UsuarioValidator implements Validator {
+@FacesValidator("periodoValidator") 
+public class PeriodoValidator implements Validator {
     public void validate(FacesContext facesContext, UIComponent uIComponent, Object value) throws ValidatorException { 
-                Pattern pattern = Pattern.compile("\\w+@\\w+\\.\\w+"); 
+                Pattern pattern = Pattern.compile("^\\S[0-9_\\-]+$"); 
                 Matcher matcher = pattern.matcher( (CharSequence) value); 
                 HtmlInputText htmlInputText = (HtmlInputText) uIComponent; 
                 String label; 
