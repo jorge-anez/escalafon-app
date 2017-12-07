@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 16-may-2015 14:51:41 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class name="dea.modelo.Facultad" optimistic-lock="version" schema="public" table="facultad">
+    <id name="idFacultad" type="long">
+      <column name="id_facultad"/>
+      <generator class="identity"/> 
+      
+    </id>
+    <many-to-one class="dea.modelo.Universidad" fetch="select" name="universidad" not-null="true">
+      <column length="10" name="sigla_universidad"/>
+    </many-to-one>
+    <property name="siglaFacultad" type="string">
+      <column length="10" name="sigla_facultad"/>
+    </property>
+    <property name="nombre" type="string">
+      <column length="100" name="nombre"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="carreras" table="carrera">
+      <key>
+        <column name="id_facultad" not-null="true"/>
+      </key>
+      <one-to-many class="dea.modelo.Carrera"/>
+    </set>
+  </class>
+</hibernate-mapping>

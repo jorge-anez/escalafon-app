@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 16-may-2015 14:51:41 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class name="dea.modelo.Estudiante" optimistic-lock="version" schema="public" table="estudiante">
+    <id name="ci" type="string">
+      <column length="20" name="ci"/>
+      <generator class="foreign">
+        <param name="property">persona</param>
+      </generator>
+    </id>
+    <one-to-one class="dea.modelo.Persona" constrained="true" name="persona"/>
+    <property name="estado" type="string">
+      <column length="20" name="estado"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="estudianteRegistroMaterias" table="estudiante_registro_materia">
+      <key>
+        <column length="20" name="ci" not-null="true"/>
+      </key>
+      <one-to-many class="dea.modelo.EstudianteRegistroMateria"/>
+    </set>
+  </class>
+</hibernate-mapping>

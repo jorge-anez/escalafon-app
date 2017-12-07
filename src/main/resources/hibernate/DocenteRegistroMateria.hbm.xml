@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 16-may-2015 14:51:41 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class name="dea.modelo.DocenteRegistroMateria" optimistic-lock="version" schema="public" table="docente_registro_materia">
+    <id name="idDocenteRegistroMateria" type="long">
+      <column name="id_docente_registro_materia"/>      
+      <generator class="identity"/>      
+    </id>
+    <many-to-one class="dea.modelo.Docente" fetch="select" name="docente">
+      <column length="20" name="ci" not-null="true"/>
+    </many-to-one>
+    
+    <many-to-one class="dea.modelo.Materia" fetch="select" name="materia">
+      <column name="id_materia" not-null="true"/>
+    </many-to-one>
+    <property name="paralelo" type="string">
+      <column length="10" name="paralelo" not-null="false"/>
+    </property>
+    <property name="periodo" type="string">
+      <column length="10" name="periodo" not-null="false"/>
+    </property>
+    <property name="tipoPeriodo" type="string">
+      <column length="20" name="tipo_periodo" not-null="false"/>
+    </property>
+    <property name="gestion" type="string">
+      <column length="5" name="gestion" not-null="false"/>
+    </property>
+    <property name="fechaInicio" type="date">
+      <column length="13" name="fecha_inicio" not-null="false"/>
+    </property>
+    <property name="fechaFin" type="date">
+      <column length="13" name="fecha_fin" not-null="false"/>
+    </property>
+    <property name="horas" type="short">
+      <column name="horas" not-null="false"/>
+    </property>
+    <property name="item" type="string">
+      <column length="10" name="item" not-null="false"/>
+    </property>
+    <property name="tipoMateria" type="string">
+      <column length="20" name="tipo_materia" not-null="false"/>
+    </property>
+    <property name="estado" type="string">
+      <column length="20" name="estado" not-null="false"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="estudianteRegistroMaterias" table="estudiante_registro_materia">
+      <key>
+        <column name="id_docente_registro_materia" not-null="true"/>
+      </key>
+      <one-to-many class="dea.modelo.EstudianteRegistroMateria"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="evaluacions" table="evaluacion">
+      <key>
+        <column name="id_docente_registro_materia" not-null="true"/>
+      </key>
+      <one-to-many class="dea.modelo.Evaluacion"/>
+    </set>
+  </class>
+</hibernate-mapping>

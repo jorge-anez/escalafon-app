@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 16-may-2015 14:51:41 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class name="dea.modelo.EstudianteRegistroMateria" optimistic-lock="version" schema="public" table="estudiante_registro_materia">
+    <id name="idEstudianteRegistroMateria" type="long">
+      <column name="id_estudiante_registro_materia"/>
+      <generator class="identity"/>
+        
+    </id>
+    <many-to-one class="dea.modelo.DocenteRegistroMateria" fetch="select" name="docenteRegistroMateria">
+      <column name="id_docente_registro_materia" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dea.modelo.Estudiante" fetch="select" name="estudiante">
+      <column length="20" name="ci" not-null="true"/>
+    </many-to-one>
+    
+  </class>
+</hibernate-mapping>

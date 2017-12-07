@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 16-may-2015 14:51:41 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class name="dea.modelo.RequiereMateria" optimistic-lock="version" schema="public" table="requiere_materia">
+    <composite-id class="dea.modelo.RequiereMateriaId" name="id">
+      <key-property name="idMateria" type="long">
+        <column name="id_materia"/>
+      </key-property>
+      <key-property name="idMateriaRequisito" type="long">
+        <column name="id_materia_requisito"/>
+      </key-property>
+    </composite-id>
+    <many-to-one class="dea.modelo.Materia" fetch="select" insert="false" name="materiaByIdMateriaRequisito" update="false">
+      <column name="id_materia_requisito" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dea.modelo.Materia" fetch="select" insert="false" name="materiaByIdMateria" update="false">
+      <column name="id_materia" not-null="true"/>
+    </many-to-one>
+  </class>
+</hibernate-mapping>

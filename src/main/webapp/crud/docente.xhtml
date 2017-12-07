@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <body>
+
+        <ui:composition template="./../plantillas/plantilla.xhtml">
+
+            <ui:define name="top">
+            <f:event type="preRenderView" listener="#{checkLogged.isLogged}" />
+                 <p:panel id="dialog">                       
+                        <h:panelGrid columns="3" columnClasses="rightalign,leftalign,leftalign">
+                            <h:outputLabel for="username" value="Nombre:"/>
+                            <p:outputLabel id="username" value="#{personaBean.nombre}"/>                            
+                            <h:outputLabel for="password" value="Apellido:"/>
+                            <p:outputLabel id="password" value="#{personaBean.apellido}"/>                                                                               
+                        </h:panelGrid>
+                     <h:form>
+                     <p:commandLink value="Salir" action="#{personaBean.logout()}" ajax="false"/>
+                     </h:form>
+                </p:panel>
+            </ui:define>
+
+            <ui:define name="bottom">
+                bottom
+            </ui:define>
+
+            
+
+            <ui:define name="right">
+                right
+            </ui:define>
+
+            <ui:define name="content">
+                
+                <h:form id="table_form_docente"  >                
+                    <p:dataTable  var="d" value="#{docenteBean.docenteList}" rows="5"
+                                                  paginator="true"
+                                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                  rowsPerPageTemplate="5,10,15"  editable="true" paginatorPosition="bottom" currentPageReportTemplate="{startRecord}-{endRecord}" >
+
+                        <f:facet name="header" >
+                            <p:outputLabel value="Docentes"/>
+                        </f:facet>
+                               <p:column styleClass="leftAlign" headerText="C.I." filterBy="#{d.ci}">                            
+                                             <h:outputText value="#{d.ci}" />                                
+                               </p:column>
+                               <p:column headerText="Nombre" filterBy="#{d.nombre}">                            
+                                             <h:outputText value="#{d.nombre}" />                                
+                                 </p:column>
+                               <p:column headerText="Apellido" filterBy="#{d.apellido}">                            
+                                             <h:outputText value="#{d.apellido}" />                          
+                               </p:column>  
+                               <p:column headerText="Grado Academico">                            
+                                   <h:outputText value="#{d.docente.gradoAcademico}" />                          
+                               </p:column>
+                               <p:column headerText="Opcion"  style="width: 14% !important;" >                                    
+                                   <p:commandButton icon="ui-icon-trash " title="Retirar Docente" actionListener="#{docenteBean.quitarDocente(d.docente)}" update=":table_form_docente"/>
+                                </p:column>
+                        <f:facet name="footer" >
+                            <p:commandButton value="Crear Docente" update=":dialog_users" oncomplete="PF('var_new_docente').show()" />
+                        </f:facet>
+                </p:dataTable>                   
+                </h:form> 
+                   
+                
+                
+                <p:dialog visible="false" id="dialog_users" widgetVar="var_new_docente" style="max-width: 60%; font-size: 10px;">
+                    <h:form id="table_form_users"  >                
+                        <p:dataTable  var="u" value="#{docenteBean.userList}" rows="5"
+                                                  paginator="true"
+                                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                  rowsPerPageTemplate="5,10,15"  editable="true" paginatorPosition="bottom" currentPageReportTemplate="{startRecord}-{endRecord}" >
+
+                        <f:facet name="header" >
+                            <p:outputLabel value="Usuarios"/>
+                        </f:facet>
+                               <p:column styleClass="leftAlign" headerText="C.I." filterBy="#{u.ci}">                            
+                                             <h:outputText value="#{u.ci}" />                                
+                               </p:column>
+                               <p:column headerText="Nombre" filterBy="#{u.nombre}">                            
+                                             <h:outputText value="#{u.nombre}" />                                
+                                 </p:column>
+                               <p:column headerText="Apellido" filterBy="#{u.apellido}">                            
+                                             <h:outputText value="#{u.apellido}" />                          
+                               </p:column>                                
+                                <p:column headerText="Opcion">                            
+                                    <p:commandButton value="Asignar como Docente" actionListener="#{docenteBean.crearDocente(u.ci)}" update=":dialog_grado" oncomplete="PF('var_new_grado').show()"/>
+                               </p:column>
+                            <f:facet name="footer">
+                                <p:button value="Cerrar"/>
+                            </f:facet>
+                </p:dataTable>                   
+                </h:form> 
+                </p:dialog>
+             
+                
+                <p:dialog visible="false" id="dialog_grado" widgetVar="var_new_grado" modal="true" appendTo="@(body)">
+                    <h:form id="table_form_grado">
+                        <p:panelGrid columns="2" style="width: 100%" columnClasses="rightalign,leftalign"  >
+                        <p:column>
+                            <h:outputText value="Grado Academico:" /> 
+                        </p:column>
+                         <p:column>
+                             <p:inputText  size="50" value="#{docenteBean.grado}"/>          
+                        </p:column>                                                                              
+                      <f:facet name="footer">
+                          <p:commandButton update=":table_form_docente, :dialog_users" actionListener="#{docenteBean.crearDocente()}" icon="ui-icon-check" value="Aceptar" oncomplete="PF('var_new_grado').hide();"></p:commandButton>            
+                       <p:commandButton icon="ui-icon-check" value="Cancelar" oncomplete="PF('var_new_grado').hide();"></p:commandButton>            
+                      </f:facet>
+                    </p:panelGrid>
+                    </h:form>
+                </p:dialog>  
+                      
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

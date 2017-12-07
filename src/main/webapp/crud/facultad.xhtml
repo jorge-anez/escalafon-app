@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <body>
+
+        <ui:composition template="./../plantillas/plantilla.xhtml">
+
+            <ui:define name="top">
+            <f:event type="preRenderView" listener="#{checkLogged.isLogged}" />
+                 <p:panel id="dialog">                       
+                        <h:panelGrid columns="3" columnClasses="rightalign,leftalign,leftalign">
+                            <h:outputLabel for="username" value="Nombre:"/>
+                            <p:outputLabel id="username" value="#{personaBean.nombre}"/>                            
+                            <h:outputLabel for="password" value="Apellido:"/>
+                            <p:outputLabel id="password" value="#{personaBean.apellido}"/>                                                                               
+                        </h:panelGrid>
+                     <h:form>
+                     <p:commandLink value="Salir" action="#{personaBean.logout()}" ajax="false"/>
+                     </h:form>
+                </p:panel>
+            </ui:define>
+
+            <ui:define name="bottom">
+                bottom
+            </ui:define>
+
+           
+
+            <ui:define name="right">
+                right
+            </ui:define>
+
+            <ui:define name="content">                
+                
+               <p:outputLabel value="Facultades"  />        
+              
+                
+               <h:form id="table_form">  
+                
+                   <p:dataTable  var="f" value="#{facultadBean.facultadList}" rows="10"
+                                         paginator="true"
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="5,10,15"  editable="true" paginatorPosition="top" currentPageReportTemplate="{startRecord}-{endRecord}" >
+                        <f:facet  name="header"  >                          
+                            <p:selectOneMenu id="universidades" value="#{universidadBean.uSelected.siglaUniversidad}">                               
+                                <f:selectItem itemLabel="--Vacio--" itemValue="null" />                                
+                                <f:selectItems value="#{universidadBean.universidadList}" var="u" itemLabel="#{u.nombre}" itemValue="#{u.siglaUniversidad}"/>                               
+                                <p:ajax listener="#{facultadBean.handleChange}" update="universidades,:table_form" event="valueChange"  partialSubmit="true" process="universidades"/>
+                            </p:selectOneMenu>
+                        </f:facet>                     
+                        
+                        <p:column headerText="Sigla">                            
+                                    <h:outputText value="#{f.siglaFacultad}" />                                
+                        </p:column>
+
+                        <p:column headerText="Nombre">
+                           <p:cellEditor>                             
+                                <f:facet name="output"> 
+                                    <h:outputText value="#{f.nombre}" /> 
+                                </f:facet> 
+                                 <f:facet name="input"> 
+                                    <p:inputText value="#{f.nombre}" /> 
+                                </f:facet> 
+                           </p:cellEditor> 
+                        </p:column >
+                        
+                        <p:column headerText="Opciones"  style="width: 14% !important;" >   
+                            <p:commandButton icon="ui-icon-search" title="Ver #{f.nombre}" actionListener="#{facultadBean.viewItem(f)}"  update=":viewDialog, :table_form" oncomplete="PF('var_view_dialog').show();" />
+                            <p:commandButton icon="ui-icon-pencil" title="modificar #{f.nombre}" actionListener="#{facultadBean.updateItem(f)}" update=":editDialog" oncomplete="PF('var_edit_dialog').show();" />
+                            <p:commandButton icon="ui-icon-trash " title="Eliminar #{f.nombre}" actionListener="#{facultadBean.removeItem(f)}" update=":confirm_form, :table_form"  oncomplete="PF('confirm_dialog').show();"/>
+                        </p:column>   
+                        
+                        
+                        <f:facet  name="footer"  >                          
+                            <p:commandButton style="" icon="ui-icon-document" value="Añadir Nuevo" actionListener="#{facultadBean.createItem()}" update=":createForm, :table_form" oncomplete="PF('var_create_dialog').show();"></p:commandButton>                         
+                        </f:facet>
+                    </p:dataTable>                   
+                </h:form>                
+               
+               
+               <p:dialog header="Modificar" resizable="true" widgetVar="var_edit_dialog" id="editDialog" closable="false" modal="true" appendTo="@(body)">            
+                  <h:form id="editForm">
+                    <p:panelGrid columns="2" style="width: 100%" columnClasses="rightalign,leftalign"  >
+                        <p:column>
+                            <h:outputText value="Sigla:" /> 
+                        </p:column>
+                        <p:column>
+                            <h:inputText value="#{facultadBean.fSelected.siglaFacultad}"/>
+                        </p:column>
+                        <p:column width="50%">
+                            <h:outputText value="Nombre:" /> 
+                        </p:column>
+                        <p:column>
+                            <p:inputText  size="50" value="#{facultadBean.fSelected.nombre}"/>          
+                        </p:column>                                                        
+                      <f:facet name="footer">
+                       <p:commandButton actionListener="#{facultadBean.updateItem}" icon="ui-icon-check" update=":table_form" value="Aceptar" oncomplete="PF('var_edit_dialog').hide();"></p:commandButton>            
+                       <p:button icon="ui-icon-cancel" value="Cancelar"></p:button>
+                      </f:facet>
+                    </p:panelGrid>                     
+                  </h:form>
+              </p:dialog>   
+               
+           
+               <p:dialog header="Ver Detalles" resizable="true" widgetVar="var_view_dialog" id="viewDialog" closable="false" modal="true" appendTo="@(body)">       
+                    <p:panelGrid columns="2" columnClasses="rightalign,leftalign"  >
+                        <p:column>
+                            <h:outputText value="Sigla:" /> 
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{facultadBean.fSelected.siglaFacultad}"/>
+                        </p:column>
+                        <p:column width="50%">
+                            <h:outputText value="Nombre:" /> 
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{facultadBean.fSelected.nombre}"/>
+                        </p:column>
+                        <f:facet name="footer">                       
+                            <p:button icon="ui-icon-cancel" value="Cerrar"></p:button>
+                        </f:facet>
+                    </p:panelGrid>                  
+              </p:dialog>
+             
+               
+               <p:dialog header="Crear Nuevo" resizable="true" widgetVar="var_create_dialog" id="createDialog" closable="false" modal="true" appendTo="@(body)">            
+                  <h:form id="createForm">
+                    <p:panelGrid columns="2" style="width: 100%" columnClasses="rightalign,leftalign"  >
+                        <p:column>
+                            <h:outputText value="Sigla:" /> 
+                        </p:column>
+                         <p:column>
+                            <p:inputText  size="50" value="#{facultadBean.fSelected.siglaFacultad}"/>          
+                        </p:column>
+                        <p:column width="50%">
+                            <h:outputText value="Nombre:" /> 
+                        </p:column>
+                        <p:column>
+                            <p:inputText  size="50" value="#{facultadBean.fSelected.nombre}"/>          
+                        </p:column>                                                        
+                      <f:facet name="footer">
+                       <p:commandButton actionListener="#{facultadBean.createItem(true)}" icon="ui-icon-check" update=":createForm, :table_form" value="Aceptar" oncomplete="PF('var_create_dialog').hide();"></p:commandButton>            
+                       <p:button icon="ui-icon-cancel" value="Cancelar"></p:button>
+                      </f:facet>
+                    </p:panelGrid>                     
+                  </h:form>
+              </p:dialog>               
+               
+               
+               
+               <p:confirmDialog id="id_confirm_dialog" message="Esta seguro de eliminar?" header="Confirmacion" severity="alert" closable="false"   widgetVar="confirm_dialog" appendTo="@(body)">     
+                   <h:form id="confirm_form">
+                       <p:commandButton value="Si" actionListener="#{facultadBean.removeItem()}" update=":table_form" oncomplete="PF('confirm_dialog').hide()"/>     
+                       <p:commandButton value="No" onclick="PF('confirm_dialog').hide();" type="button" />  
+                   </h:form>
+               </p:confirmDialog> 
+           
+               
+             
+               
+                      
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

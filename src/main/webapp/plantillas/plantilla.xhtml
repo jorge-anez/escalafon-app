@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />       
+        <title>Plantilla DEA</title>        
+    </h:head>
+    <h:body>
+        <p:layout fullPage="true">   
+            
+              <p:layoutUnit maxSize="300" position="north" size="auto" resizable="true" closable="false" collapsible="false"> 
+                  <f:event type="preRenderView" listener="#{personaBean.isLogged}" />
+                 <div style="display: table; ">
+                   <div style="display:table-row; height: 90px;">
+                       <div style="display: table-cell; width: 7%; font-size: 24px; text-align: center; margin-top:15px">
+                           
+                       </div>  
+                     <div style=" background: url(../resources/tecnica1.png)no-repeat; display: table-cell; width: 15%; ">
+                         <br></br>
+                         <br></br>
+                         <br></br>
+                         <p:outputLabel style="font-size: 12px; text-align: left;" value="UNIVERSIDAD TÉCNICA DE ORURO"/>
+                   
+                     </div>
+                     <div style="background: url(../resources/titulo.png)no-repeat; display: table-cell; width: 40%; font-size: 24px; text-align: center; ">
+                       
+                     </div>
+                     <div style=" display: table-cell; width: 8%; font-size: 24px; text-align: center; ">
+                       
+                     </div>                     
+                     <div style="display: table-cell; font-size: 14px; width: 10%; text-align: center;">
+                         
+                                         
+                            <h:panelGrid columnClasses="rightalign,leftalign,leftalign">
+                                <p:row>
+                                    <p:column >
+                                        <h:outputLabel style="font-weight: bold;" for="username" value="Usuario:           "/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:outputLabel id="username" value="#{personaBean.user_session.nombre}  #{personaBean.user_session.apellido}"/> 
+                                    </p:column>  
+                                </p:row>
+                                <p:row>
+                                    <p:column colspan="2">
+                                    <h:form>
+                                        <p:commandButton style="width: 100%;" value="S a l i r" action="#{personaBean.logout()}" ajax="false" icon="fa fa-mail-reply"/>
+                                    </h:form>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column colspan="2">
+                                        <h:form>
+                                            <p:themeSwitcher  id="basic" style="width:165px" value="#{personaBean.theme}" >                                                   
+                                                   <f:selectItem itemLabel="Afterdark" itemValue="afterdark"/>
+                                                   <f:selectItem itemLabel="Afternoon" itemValue="afternoon"/>
+                                                   <f:selectItem itemLabel="Afterwork" itemValue="afterwork"/>
+                                                   <f:selectItem itemLabel="Black-tie" itemValue="black-tie"/>
+                                                   <f:selectItem itemLabel="Blitzer" itemValue="blitzer"/>
+                                                   <f:selectItem itemLabel="Bluesky" itemValue="bluesky"/>
+                                                   <f:selectItem itemLabel="Bootstrap" itemValue="bootstrap"/>
+                                                   <f:selectItem itemLabel="Casablanca" itemValue="casablanca"/>
+                                                   <f:selectItem itemLabel="Cruze" itemValue="cruze"/>
+                                                   <f:selectItem itemLabel="Cupertino" itemValue="cupertino"/>
+                                                   <f:selectItem itemLabel="Dark-Hive" itemValue="dark-hive"/>
+                                                   <f:selectItem itemLabel="Delta" itemValue="delta"/>
+                                                   <f:selectItem itemLabel="Dot-luv" itemValue="dot-luv"/>
+                                                   <f:selectItem itemLabel="Eggplant" itemValue="eggplant"/>
+                                                   <f:selectItem itemLabel="Exite-bike" itemValue="excite-bike"/>
+                                                   <f:selectItem itemLabel="Flick" itemValue="flick"/>
+                                                   <f:selectItem itemLabel="Glass-x" itemValue="glass-x"/>
+                                                   <f:selectItem itemLabel="Home" itemValue="home"/>
+                                                   <f:selectItem itemLabel="Sunny" itemValue="sunny"/>
+                                                   
+                                                   <p:ajax listener="#{personaBean.changeTheme}" event="valueChange"  partialSubmit="true" process="@this"/>
+                                            </p:themeSwitcher> 
+                                       </h:form>
+                                    </p:column>
+                                </p:row>
+                            </h:panelGrid>
+                            
+                           
+                            
+                     </div>  
+                   </div>  
+                 </div>
+              </p:layoutUnit>     
+            
+            <p:layoutUnit style="text-align: center;" position="south" size="100" resizable="false" closable="false" collapsible="true">          
+                    
+                  <!-- <ui:insert name="bottom">Bottom</ui:insert>     -->
+               <!--
+                <p:dock itemWidth="70" id="dock" position="bottom" >
+                        <p:menuitem value="Home" icon="/resources/agronomia.png" url="#" />
+                        <p:menuitem value="Home" icon="/resources/arquitectura.png" url="#" />
+                        <p:menuitem value="Home" icon="/resources/derecho.png" url="#" />
+                        <p:menuitem value="Home" icon="/resources/economia.png" url="#" />
+                        <p:menuitem value="Home" icon="/resources/fni.png" url="#" />
+                        <p:menuitem value="Home" icon="/resources/medicina.png" url="#" />
+                        <p:menuitem value="Home" icon="/resources/tecnica.png" url="#" />
+                </p:dock>
+               -->                
+               <p:breadCrumb style="text-align: center; font-size: 12px; float: center;">
+                            <p:menuitem  value="Universidad Tecnica de Oruro" url="#" />
+                            <p:menuitem value="Universidad Tecnica de Oruro" url="#" />
+                            <p:menuitem value="Contactos" url="#" />
+                            <p:menuitem value="Derechos Reservados © 2015" url="#" />
+                </p:breadCrumb>
+                   
+              </p:layoutUnit>        
+              <p:layoutUnit position="west" size="auto" resizable="false" closable="false" collapsible="true">          
+                    <h:form>                    
+                     <p:menu  style="min-width: 200px; font-size: 12px;">
+                        <p:submenu label="Administrar">
+                            <p:menuitem url="universidad.xhtml" value="Universidad" icon="fa fa-institution" />
+                            <p:menuitem url="facultad.xhtml" value="Facultad" icon="fa fa-university"/>
+                            <p:menuitem url="carrera.xhtml" value="Carrera" icon="fa fa-mortar-board"/>
+                            <p:menuitem url="materia.xhtml" value="Materia" icon="fa fa-book"/>
+                        </p:submenu>
+                        <p:submenu label="Administrar Usuarios">
+                            <p:menuitem url="usuario.xhtml" value="Usuarios" ajax="false" icon="fa fa-user"/>
+                            <p:menuitem url="director_dea.xhtml" value="Director DEA" ajax="false" icon="fa fa-fax" />
+                            <p:menuitem url="coordinador_dea.xhtml" value="Coordinador DEA" ajax="false" icon="fa fa-cubes"/>
+                            <p:menuitem url="docente.xhtml" value="Docente" ajax="false" icon="fa fa-edit" />
+                            
+                        </p:submenu>
+                        <p:submenu label="Administrar Materia">
+                            <p:menuitem  url="DocenteRegistroMateria.xhtml" value="Registro Docente Materia" icon="fa fa-folder"/>                            
+                        </p:submenu>
+                        
+                        <p:submenu label="Administrar Escalafon">
+                            <p:menuitem url="DocenteEscalafon.xhtml" value="Docente Escalafon" icon="fa fa-line-chart"/>                                                        
+                        </p:submenu>                        
+                     </p:menu>                   
+                    </h:form>
+                  <!--<ui:insert name="left">Left</ui:insert>     -->
+              </p:layoutUnit>        
+              <p:layoutUnit style="font-size: 11px;" position="east"  size="200" resizable="false" closable="false" collapsible="false">          
+                  <pe:analogClock mode="server" width="190"/>
+                  <p:calendar mode="inline" />
+                    
+              </p:layoutUnit>        
+            <p:layoutUnit position="center" resizable="false" style="font-size: 12px;">          
+                    <ui:insert name="content">Content</ui:insert> 
+              </p:layoutUnit>  
+        </p:layout>
+    </h:body>
+</html>

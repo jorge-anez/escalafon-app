@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 16-may-2015 14:51:41 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class name="dea.modelo.Universidad" optimistic-lock="version" schema="public" table="universidad">
+    <id name="siglaUniversidad" type="string">
+      <column length="10" name="sigla_universidad"/>
+      <generator class="assigned"/>
+    </id>
+    <property name="nombre" type="string">
+      <column length="100" name="nombre" not-null="true"/>
+    </property>
+    <set fetch="select" inverse="true" cascade="save-update" lazy="true" name="facultads" table="facultad">
+      <key>
+        <column length="10" name="sigla_universidad" not-null="true"/>
+      </key>
+      <one-to-many class="dea.modelo.Facultad"/>
+    </set>
+  </class>
+</hibernate-mapping>

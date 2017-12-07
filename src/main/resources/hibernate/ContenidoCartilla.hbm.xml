@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 16-may-2015 14:51:41 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class name="dea.modelo.ContenidoCartilla" optimistic-lock="version" schema="public" table="contenido_cartilla">
+    <id name="idContenidoCartilla" type="long">
+      <column name="id_contenido_cartilla"/>
+      <generator class="assigned"/>
+    </id>
+    <many-to-one class="dea.modelo.Cartilla" fetch="select" name="cartilla">
+      <column name="id_cartilla" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dea.modelo.Evaluacion" fetch="select" name="evaluacion">
+      <column name="id_evaluacion" not-null="true"/>
+    </many-to-one>
+    <property name="cargaHoraria" type="int">
+      <column name="carga_horaria" not-null="true"/>
+    </property>
+    <property name="puntajeEvaluacion" type="double">
+      <column name="puntaje_evaluacion" not-null="true" precision="17" scale="17"/>
+    </property>
+    <property name="puntajeParcial" type="double">
+      <column name="puntaje_parcial" not-null="true" precision="17" scale="17"/>
+    </property>
+  </class>
+</hibernate-mapping>

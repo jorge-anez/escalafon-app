@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 16-may-2015 14:51:41 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class name="dea.modelo.Escalafon" optimistic-lock="version" schema="public" table="escalafon">
+    <id name="idEscalafon" type="long">
+      <column name="id_escalafon"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dea.modelo.Cartilla" fetch="select" name="cartilla">
+      <column name="id_cartilla" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dea.modelo.DocenteEscalafon" fetch="select" name="docenteEscalafon">
+      <column length="20" name="ci" not-null="true"/>
+    </many-to-one>
+    <property name="puntaje" type="double">
+      <column name="puntaje" not-null="true" precision="17" scale="17"/>
+    </property>
+    <property name="puntajeAcumulado" type="double">
+      <column name="puntaje_acumulado" not-null="true" precision="17" scale="17"/>
+    </property>
+    <property name="categoria" type="string">
+      <column length="30" name="categoria" not-null="false"/>
+    </property>
+    <property name="gestion" type="string">
+      <column length="5" name="gestion" not-null="true"/>
+    </property>
+    <property name="obs" type="string">
+      <column length="700" name="observaciones" not-null="false"/>
+    </property>
+    <property name="tipoRes" type="long">
+      <column name="tipo_res"/>
+    </property>
+  </class>
+</hibernate-mapping>

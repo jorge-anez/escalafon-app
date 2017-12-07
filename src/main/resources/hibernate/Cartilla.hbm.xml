@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 16-may-2015 14:51:41 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class name="dea.modelo.Cartilla" optimistic-lock="version" schema="public" table="cartilla">
+    <id name="idCartilla" type="long">
+      <column name="id_cartilla"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dea.modelo.DocenteEscalafon" fetch="select" name="docenteEscalafon">
+      <column length="20" name="ci" not-null="true"/>
+    </many-to-one>
+    <property name="totalHoras" type="double">
+      <column name="total_horas" not-null="true" precision="17" scale="17"/>
+    </property>
+    <property name="totalParcial" type="double">
+      <column name="total_parcial" not-null="true" precision="17" scale="17"/>
+    </property>
+    <property name="notaPromedio" type="double">
+      <column name="nota_promedio" not-null="true" precision="17" scale="17"/>
+    </property>
+    <property name="puntajeEscalafon" type="double">
+      <column name="puntaje_escalafon" not-null="true" precision="17" scale="17"/>
+    </property>
+    <property name="gestion" type="string">
+      <column length="5" name="gestion" not-null="true"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="contenidoCartillas" table="contenido_cartilla">
+      <key>
+        <column name="id_cartilla" not-null="true"/>
+      </key>
+      <one-to-many class="dea.modelo.ContenidoCartilla"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="escalafons" table="escalafon">
+      <key>
+        <column name="id_cartilla" not-null="true"/>
+      </key>
+      <one-to-many class="dea.modelo.Escalafon"/>
+    </set>
+  </class>
+</hibernate-mapping>

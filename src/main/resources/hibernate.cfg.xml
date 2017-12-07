@@ -1,34 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
-  <session-factory>
-    <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL9Dialect</property>
-    <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-    <property name="hibernate.connection.url">jdbc:postgresql://localhost/NuevoEscalafonDocente</property>
-    <property name="hibernate.connection.username">postgres</property>
-    <property name="hibernate.connection.password">easy-password</property>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/CoordinadorDea.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/Estudiante.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/Escalafon.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/MiembroComisionEvaluadora.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/Persona.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/Materia.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/RelacionEstudianteMateria.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/RelacionDocenteMateria.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/Cartilla.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/DocenteEscalafon.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/Universidad.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/DirectorDea.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/DirectorCarrera.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/Docente.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/IdentificadorRegistroMateria.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/ContenidoCartilla.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/EvaluacionEscalafon.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/Carrera.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/Facultad.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/Evaluacion.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/ComisionEvaluadora.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/Resolucion.hbm.xml"/>
-    <mapping resource="bo/edu/uto/dea/jhs/persistence/RequiereMateria.hbm.xml"/>
-  </session-factory>
+    <session-factory>
+        <!--
+        <property name="dialect">org.hibernate.dialect.DerbyTenFiveDialect</property>
+        <property name="show_sql">true</property>
+        <property name="hibernate.hbm2ddl.auto">create</property>
+        -->
+    </session-factory>
 </hibernate-configuration>
