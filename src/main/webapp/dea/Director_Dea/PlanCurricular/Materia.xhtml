@@ -1,0 +1,253 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body id="bodyUniversidad" >
+
+        <p:growl id="mensajesDeaDirdeaUniacadFacultad" showDetail="true" life="3000" />
+
+        <h:outputText value="Universidad " />
+        <p:selectOneMenu value="#{universidadBean.siglaUniversidad}" style="width: 300px" >
+            <f:selectItem itemLabel="Seleccionar Universidad" itemValue="-" />
+            <f:selectItems value="#{universidadBean.listaMap}" var="universidades" itemLabel="#{universidades}" itemValue="#{universidades}" />
+            <p:ajax event="change" listener="#{facultadBean.obtenerFacultads}" update=":main:mensajesDeaDirdeaUniacadFacultad dataTableFacultad :main:id_crearFacultad :main:select_Facultad" />
+        </p:selectOneMenu>
+
+        <h:outputText  value="Facultad " />
+        <p:selectOneMenu id="select_Facultad" value="#{facultadBean.idFacultad}" style="width: 300px" >
+            <f:selectItem itemLabel="Seleccionar Facultad" itemValue="0" />
+            <f:selectItems value="#{facultadBean.listaMap}" var="facultades" itemLabel="#{facultades}" itemValue="#{facultades}" />
+            <p:ajax event="change" listener="#{carreraBean.obtenerCarreras}" update=":main:mensajesDeaDirdeaUniacadFacultad dataTableFacultad :main:id_crearFacultad :main:select_Carrera" />
+        </p:selectOneMenu>
+
+        <h:outputText  value="Carrera " />
+        <p:selectOneMenu id="select_Carrera" value="#{carreraBean.idCarrera}" style="width: 300px" >
+            <f:selectItem itemLabel="Seleccionar Carrera" itemValue="0" />
+            <f:selectItems value="#{carreraBean.listaMap}" var="carreras" itemLabel="#{carreras}" itemValue="#{carreras}" />
+            <p:ajax event="change" listener="#{materiaBean.obtenerMaterias}" update=":main:mensajesDeaDirdeaUniacadFacultad dataTableFacultad :main:id_crearFacultad" />
+        </p:selectOneMenu>
+
+        <p:dataTable id="dataTableFacultad" var="universidad" value="#{materiaBean.lista}" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" editable="true" >
+            <f:facet name="header" >
+                Materias
+            </f:facet>
+
+            <p:ajax event="rowEdit" listener="#{materiaBean.onEdit}" update=":main:mensajesDeaDirdeaUniacadFacultad" />
+
+            <p:ajax event="rowEditCancel" listener="#{materiaBean.onCancel}" update=":main:mensajesDeaDirdeaUniacadFacultad" />
+
+            <p:column headerText="idFacultad" rendered="false" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.idMateria}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:inputText value="#{universidad.idMateria}" style="width: 100%" disabled="true" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Sigla" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.siglaMateria}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:inputText value="#{universidad.siglaMateria}" style="width: 100%"  disabled="true" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Nombre" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.nombre}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:inputText value="#{universidad.nombre}" style="width: 100%" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="idFacultad" rendered="false" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.idCarrera}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:inputText value="#{universidad.idCarrera}" style="width: 100%"  disabled="true" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Estado" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.estado}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:selectOneMenu value="#{universidad.estado}" style="width: 100%" >
+                            <f:selectItems value="#{universidad.estados}" var="estados" itemLabel="#{estados}" itemValue="#{estados}" />
+                        </p:selectOneMenu>
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column style="width: 6%">
+                <p:rowEditor />
+            </p:column>
+
+            <p:column headerText="Requito(s)" style="width: 4%" >
+                <p:commandButton action="#{materiaBean.cargarRequiereMaterias}" id="selectButton" update=":main:dialog_requisito_materia :main:mensajesDeaDirdeaUniacadFacultad" oncomplete="crearRequisitoMateriaDlg.show()" icon="ui-icon-search" title="Requisito Materia" >
+                    <f:setPropertyActionListener value="#{universidad}" target="#{materiaBean.materiaSeleccionada}" />
+                </p:commandButton>
+            </p:column>
+
+        </p:dataTable>
+
+        <h:panelGrid columns="2" cellpadding="5" >
+            <p:commandButton id="crearUniversidad" value="Nuevo Registro" onclick="crearFacultadDlg.show();" type="button" />
+        </h:panelGrid>
+
+        <p:dialog id="id_crearFacultad" header="Crear Materia" widgetVar="crearFacultadDlg" showEffect="explode" resizable="false" width="500" >
+            <h:panelGrid columns="2" style="margin-bottom: 10px" >
+                <h:outputLabel value="Sigla" />
+                <h:inputText value="#{materiaBean.siglaMateria}" required="true" />
+
+                <h:outputLabel value="Nombre" />
+                <h:inputText value="#{materiaBean.nombre}" required="true" style="width: 400px" />
+
+                <h:outputLabel value="idCarrera" />
+                <h:inputText value="#{materiaBean.idCarrera}" disabled="true" style="width: 400px" />
+
+                <h:outputLabel value="Nombre Carrera" />
+                <p:selectOneMenu value="#{carreraBean.idCarrera}" style="width: 300px" disabled="true" >
+                    <f:selectItem itemLabel="Seleccionar Carrera" itemValue="0" />
+                    <f:selectItems value="#{carreraBean.listaMap}" var="carreras" itemLabel="#{carreras}" itemValue="#{carreras}" />
+                    <p:ajax event="change" listener="#{materiaBean.obtenerMaterias}" update=":main:mensajesDeaDirdeaUniacadFacultad dataTableFacultad :main:id_crearFacultad" />
+                </p:selectOneMenu>
+
+                <p:commandButton value="Crear"  actionListener="#{materiaBean.crearMateria}" update=":main:dataTableFacultad :main:mensajesDeaDirdeaUniacadFacultad" oncomplete="crearFacultadDlg.hide()" />
+            </h:panelGrid>
+        </p:dialog>
+
+        <p:dialog id="dialog_requisito_materia" header="Requisito Materia" widgetVar="crearRequisitoMateriaDlg" showEffect="explode" resizable="false" width="1200" >
+            <h:panelGrid columns="2" style="margin-bottom: 10px" >
+                <h:outputLabel value="Sigla" />
+                <h:outputText value="#{materiaBean.materiaSeleccionada.siglaMateria}" />
+
+                <h:outputLabel value="Nombre" />
+                <h:outputText value="#{materiaBean.materiaSeleccionada.nombre}" />
+
+                <h:outputLabel value="idFacultad" />
+                <h:outputText value="#{materiaBean.materiaSeleccionada.idCarrera}" />
+
+                <h:outputLabel value="Nombre Carrera" />
+                <p:selectOneMenu value="#{carreraBean.idCarrera}" style="width: 300px" disabled="true" >
+                    <f:selectItem itemLabel="Seleccionar Carrera" itemValue="0" />
+                    <f:selectItems value="#{carreraBean.listaMap}" var="carreras" itemLabel="#{carreras}" itemValue="#{carreras}" />
+                    <p:ajax event="change" listener="#{materiaBean.obtenerMaterias}" update=":main:mensajesDeaDirdeaUniacadFacultad dataTableFacultad :main:id_crearFacultad" />
+                </p:selectOneMenu>
+
+            </h:panelGrid>
+
+            <p:separator />
+
+            <p:panel header="Los Requisitos de la Materia" >
+                <p:dataTable id="dataTableRequiereMaterias" var="requiereMateria" value="#{materiaBean.requiereMaterias}" paginator="true" rows="4" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="4,8,10,15" editable="true" >
+                    <f:facet name="header" >
+                        Materias Requisito
+                    </f:facet>
+
+                    <p:column headerText="idRequiereMateria" rendered="false" > 
+                        <h:outputText value="#{requiereMateria.idRequiereMateria}" />
+                    </p:column>
+
+                    <p:column headerText="idMateria" rendered="false" >
+                        <h:outputText value="#{requiereMateria.idMateriaByIdMateria}" />
+                    </p:column>
+
+                    <p:column headerText="idMateriaRequisito" rendered="false" >
+                        <h:outputText value="#{requiereMateria.idMateriaByIdMateriaRequisito}" />
+                    </p:column>
+
+                    <p:column headerText="Universidad" >
+                        <h:outputText value="#{requiereMateria.universidadMateriaRequisito}" />
+                    </p:column>
+
+                    <p:column headerText="Facultad" >
+                        <h:outputText value="#{requiereMateria.facultadMateriaRequisito}" />
+                    </p:column>
+
+                    <p:column headerText="Carrera" >
+                        <h:outputText value="#{requiereMateria.carreraMateriaRequisito}"  />
+                    </p:column>
+
+                    <p:column headerText="Materia" >
+                        <h:outputText value="#{requiereMateria.materiaMateriaRequisito}"  />
+                    </p:column>
+
+                    <p:column headerText="Eliminar" style="width: 4%" >
+                        <p:commandButton id="eliminarRequiereMateria" action="#{materiaBean.eliminarRequiereMateria}" update=":main:dataTableRequiereMaterias :main:mensajesDeaDirdeaUniacadFacultad" icon="ui-icon-search" title="Eliminar" >
+                            <p:confirm header="Confirmacion" message="¿Esta Seguro?" icon="ui-icon-alert" />
+                            <f:setPropertyActionListener value="#{requiereMateria}" target="#{materiaBean.requiereMateriaSeleccionada}" />
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+                
+                
+                
+
+                <p:separator />
+                <p:panel header="Registar Requisito" >
+                    <h:panelGrid  columns="5" style="margin-bottom: 10px" >
+                        <h:outputText value="Universidad " />
+                        <p:selectOneMenu value="#{universidadBean.siglaUniversidad}" style="width: 300px" >
+                            <f:selectItem itemLabel="Seleccionar Universidad" itemValue="-" />
+                            <f:selectItems value="#{universidadBean.listaMap}" var="universidades" itemLabel="#{universidades}" itemValue="#{universidades}" />
+                            <p:ajax event="change" listener="#{facultadBean.obtenerFacultads}" update=":main:mensajesDeaDirdeaUniacadFacultad :main:dataTableFacultad :main:id_crearFacultad :main:select_Facultad_RequiereMateria :main:dataTableRequiereMaterias" />
+                        </p:selectOneMenu>
+                        
+                        <h:outputText  value="     " />
+
+                        <h:outputText  value="Facultad " />
+                        <p:selectOneMenu id="select_Facultad_RequiereMateria" value="#{facultadBean.idFacultad}" style="width: 300px" >
+                            <f:selectItem itemLabel="Seleccionar Materia" itemValue="0" />
+                            <f:selectItems value="#{facultadBean.listaMap}" var="facultades" itemLabel="#{facultades}" itemValue="#{facultades}" />
+                            <p:ajax event="change" listener="#{carreraBean.obtenerCarreras}" update=":main:mensajesDeaDirdeaUniacadFacultad :main:dataTableFacultad :main:id_crearFacultad :main:select_Carrera_RequiereMateria :main:dataTableRequiereMaterias" />
+                        </p:selectOneMenu>
+
+                        <h:outputText  value="Carrera " />
+                        <p:selectOneMenu id="select_Carrera_RequiereMateria" value="#{carreraBean.idCarrera}" style="width: 300px" >
+                            <f:selectItem itemLabel="Seleccionar Carrera" itemValue="0" />
+                            <f:selectItems value="#{carreraBean.listaMap}" var="carreras" itemLabel="#{carreras}" itemValue="#{carreras}" />
+                            <p:ajax event="change" listener="#{materiaBean.obtenerMaterias}" update=":main:mensajesDeaDirdeaUniacadFacultad :main:dataTableFacultad :main:id_crearFacultad :main:select_Materia_RequiereMateria :main:dataTableRequiereMaterias" />
+                        </p:selectOneMenu>
+                        
+                        <h:outputText  value="     " />
+                        
+                        <h:outputText  value="Materia " />
+                        <p:selectOneMenu id="select_Materia_RequiereMateria" value="#{materiaBean.idMateria}" style="width: 300px" >
+                            <f:selectItem itemLabel="Seleccionar Carrera" itemValue="0" />
+                            <f:selectItems value="#{materiaBean.listaMap}" var="carreras" itemLabel="#{carreras}" itemValue="#{carreras}" />
+                            <!--p:ajax event="change" listener="#{materiaBean.obtenerMaterias}" update=":main:mensajesDeaDirdeaUniacadFacultad :main:dataTableFacultad :main:id_crearFacultad :main:dataTableRequiereMaterias" /-->
+                        </p:selectOneMenu>
+                        
+                        <h:outputText  value=" " />
+                        <h:outputText  value=" " />
+                        <p:commandButton value="Crear"  actionListener="#{materiaBean.crearRequisitoMateria}" update=":main:dataTableFacultad :main:mensajesDeaDirdeaUniacadFacultad :main:dataTableRequiereMaterias" oncomplete="crearFacultadDlg.hide()" />
+                    </h:panelGrid>
+                </p:panel>
+
+            </p:panel>
+
+        </p:dialog>
+
+    </h:body>
+</html>

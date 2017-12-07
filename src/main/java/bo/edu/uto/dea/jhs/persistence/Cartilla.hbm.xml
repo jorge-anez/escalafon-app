@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 14-abr-2014 4:37:46 by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="bo.edu.uto.dea.jhs.persistence.Cartilla" table="cartilla" schema="public">
+        <id name="idCartilla" type="long">
+            <column name="id_cartilla" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="docenteEscalafon" class="bo.edu.uto.dea.jhs.persistence.DocenteEscalafon" fetch="select">
+            <column name="ci" length="20" not-null="true" />
+        </many-to-one>
+        <property name="totalHoras" type="double">
+            <column name="total_horas" precision="17" scale="17" not-null="true" />
+        </property>
+        <property name="totalParcial" type="double">
+            <column name="total_parcial" precision="17" scale="17" not-null="true" />
+        </property>
+        <property name="notaPromedio" type="double">
+            <column name="nota_promedio" precision="17" scale="17" not-null="true" />
+        </property>
+        <property name="puntajeEscalafon" type="double">
+            <column name="puntaje_escalafon" precision="17" scale="17" not-null="true" />
+        </property>
+        <property name="gestion" type="string">
+            <column name="gestion" length="5" not-null="true" />
+        </property>
+        <set name="evaluacionEscalafons" inverse="true">
+            <key>
+                <column name="id_cartilla" not-null="true" />
+            </key>
+            <one-to-many class="bo.edu.uto.dea.jhs.persistence.EvaluacionEscalafon" />
+        </set>
+        <set name="escalafons" inverse="true">
+            <key>
+                <column name="id_cartilla" not-null="true" />
+            </key>
+            <one-to-many class="bo.edu.uto.dea.jhs.persistence.Escalafon" />
+        </set>
+        <set name="contenidoCartillas" inverse="true">
+            <key>
+                <column name="id_cartilla" not-null="true" />
+            </key>
+            <one-to-many class="bo.edu.uto.dea.jhs.persistence.ContenidoCartilla" />
+        </set>
+        <set name="resolucions" inverse="true">
+            <key>
+                <column name="id_cartilla" not-null="true" />
+            </key>
+            <one-to-many class="bo.edu.uto.dea.jhs.persistence.Resolucion" />
+        </set>
+    </class>
+</hibernate-mapping>

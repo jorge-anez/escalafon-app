@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
+>
+
+    <context:annotation-config/>
+    <context:component-scan base-package="bo.edu.uto.dea"/>
+   
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+	<property name="url" value="jdbc:postgresql://localhost:5432/NuevoEscalafonDocente"/>
+	<property name="username" value="postgres"/>
+	<property name="password" value="easy-password"/>
+    </bean>
+    
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <property name="dataSource">
+          <ref bean="dataSource"/>
+        </property>
+
+        <property name="hibernateProperties">
+           <props>
+             <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+             <prop key="hibernate.show_sql">true</prop>
+           </props>
+         </property>
+
+        <property name="mappingResources">
+           <list>
+              <value>/bo/edu/uto/dea/jhs/persistence/Carrera.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/Cartilla.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/ComisionEvaluadora.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/ContenidoCartilla.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/CoordinadorDea.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/DirectorCarrera.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/DirectorDea.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/Docente.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/DocenteEscalafon.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/Escalafon.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/Estudiante.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/Evaluacion.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/EvaluacionEscalafon.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/Facultad.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/IdentificadorRegistroMateria.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/Materia.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/MiembroComisionEvaluadora.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/Persona.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/RelacionDocenteMateria.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/RelacionEstudianteMateria.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/RequiereMateria.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/Resolucion.hbm.xml</value>
+              <value>/bo/edu/uto/dea/jhs/persistence/Universidad.hbm.xml</value>
+           </list>
+        </property>
+    </bean>
+    
+    <!-- DAOS -->
+    <bean id="implementPersonaDAO" class="bo.edu.uto.dea.jdbc.dao.ImplementPersonaDAO">
+   	<property name="sessionFactory" ref="sessionFactory" ></property>
+    </bean>
+    
+    <bean id="implementUniversidadDAO" class="bo.edu.uto.dea.jdbc.dao.ImplementUniversidadDAO">
+   	<property name="sessionFactory" ref="sessionFactory" ></property>
+    </bean>
+    
+    <bean id="implementFacultadDAO" class="bo.edu.uto.dea.jdbc.dao.ImplementFacultadDAO">
+   	<property name="sessionFactory" ref="sessionFactory" ></property>
+    </bean>
+    
+    <bean id="implementCarreraDAO" class="bo.edu.uto.dea.jdbc.dao.ImplementCarreraDAO">
+   	<property name="sessionFactory" ref="sessionFactory" ></property>
+    </bean>
+    <!-- DAOS -->
+    <bean id="implementMateriaDAO" class="bo.edu.uto.dea.jdbc.dao.ImplementMateriaDAO">
+   	<property name="sessionFactory" ref="sessionFactory" ></property>
+    </bean>
+    
+    <bean id="implementDirectorDeaDAO" class="bo.edu.uto.dea.jdbc.dao.ImplementDirectorDeaDAO">
+   	<property name="sessionFactory" ref="sessionFactory" ></property>
+    </bean>
+    
+    <bean id="implementCoordinadorDeaDAO" class="bo.edu.uto.dea.jdbc.dao.ImplementCoordinadorDeaDAO">
+   	<property name="sessionFactory" ref="sessionFactory" ></property>
+    </bean>
+    
+    <bean id="implementDocenteDAO" class="bo.edu.uto.dea.jdbc.dao.ImplementDocenteDAO">
+   	<property name="sessionFactory" ref="sessionFactory" ></property>
+    </bean>
+    <!-- DAOS -->
+    <bean id="implementEstudianteDAO" class="bo.edu.uto.dea.jdbc.dao.ImplementEstudianteDAO">
+   	<property name="sessionFactory" ref="sessionFactory" ></property>
+    </bean>
+    
+    <bean id="implementDirectorCarreraDAO" class="bo.edu.uto.dea.jdbc.dao.ImplementDirectorCarreraDAO">
+   	<property name="sessionFactory" ref="sessionFactory" ></property>
+    </bean>
+    
+    <bean id="implementComisionEvaluadoraDAO" class="bo.edu.uto.dea.jdbc.dao.ImplementComisionEvaluadoraDAO">
+   	<property name="sessionFactory" ref="sessionFactory" ></property>
+    </bean>
+    
+    <!-- DAOS -->
+    <bean id="implementRelacionDocenteMateriaDAO" class="bo.edu.uto.dea.jdbc.dao.ImplementRelacionDocenteMateriaDAO">
+   	<property name="sessionFactory" ref="sessionFactory" ></property>
+    </bean>
+    
+    <bean id="implementDocenteEscalafonDAO" class="bo.edu.uto.dea.jdbc.dao.ImplementDocenteEscalafonDAO">
+   	<property name="sessionFactory" ref="sessionFactory" ></property>
+    </bean>
+    
+        
+    
+    
+    
+    
+    
+    
+    <!-- BOS -->
+    <bean id="implementPersonaBO" class="bo.edu.uto.dea.jhs.bo.ImplementPersonaBO">
+        <property name="implementPersonaDAO" ref="implementPersonaDAO" ></property>
+    </bean>
+    
+    <bean id="implementUniversidadBO" class="bo.edu.uto.dea.jhs.bo.ImplementUniversidadBO">
+        <property name="implementUniversidadDAO" ref="implementUniversidadDAO" ></property>
+    </bean>
+    
+    <bean id="implementFacultadBO" class="bo.edu.uto.dea.jhs.bo.ImplementFacultadBO">
+        <property name="implementFacultadDAO" ref="implementFacultadDAO" ></property>
+    </bean>
+    
+    <bean id="implementCarreraBO" class="bo.edu.uto.dea.jhs.bo.ImplementCarreraBO">
+        <property name="implementCarreraDAO" ref="implementCarreraDAO" ></property>
+    </bean>
+    <!-- BOS -->
+    <bean id="implementMateriaBO" class="bo.edu.uto.dea.jhs.bo.ImplementMateriaBO">
+        <property name="implementMateriaDAO" ref="implementMateriaDAO" ></property>
+    </bean>
+    
+    <bean id="implementDirectorDeaBO" class="bo.edu.uto.dea.jhs.bo.ImplementDirectorDeaBO">
+        <property name="implementDirectorDeaDAO" ref="implementDirectorDeaDAO" ></property>
+    </bean>
+    
+    <bean id="implementCoordinadorDeaBO" class="bo.edu.uto.dea.jhs.bo.ImplementCoordinadorDeaBO">
+        <property name="implementCoordinadorDeaDAO" ref="implementCoordinadorDeaDAO" ></property>
+    </bean>
+    
+    <bean id="implementDocenteBO" class="bo.edu.uto.dea.jhs.bo.ImplementDocenteBO">
+        <property name="implementDocenteDAO" ref="implementDocenteDAO" ></property>
+    </bean>
+    <!-- BOS -->
+    <bean id="implementEstudianteBO" class="bo.edu.uto.dea.jhs.bo.ImplementEstudianteBO">
+        <property name="implementEstudianteDAO" ref="implementEstudianteDAO" ></property>
+    </bean>
+    
+    <bean id="implementDirectorCarreraBO" class="bo.edu.uto.dea.jhs.bo.ImplementDirectorCarreraBO">
+        <property name="implementDirectorCarreraDAO" ref="implementDirectorCarreraDAO" ></property>
+    </bean>
+    
+    <bean id="implementComisionEvaluadoraBO" class="bo.edu.uto.dea.jhs.bo.ImplementComisionEvaluadoraBO">
+        <property name="implementComisionEvaluadoraDAO" ref="implementComisionEvaluadoraDAO" ></property>
+    </bean>
+    
+    <!-- BOS -->
+    <bean id="implementRelacionDocenteMateriaBO" class="bo.edu.uto.dea.jhs.bo.ImplementRelacionDocenteMateriaBO">
+        <property name="implementRelacionDocenteMateriaDAO" ref="implementRelacionDocenteMateriaDAO" ></property>
+    </bean>
+    
+    <bean id="implementDocenteEscalafonBO" class="bo.edu.uto.dea.jhs.bo.ImplementDocenteEscalafonBO">
+        <property name="implementDocenteEscalafonDAO" ref="implementDocenteEscalafonDAO" ></property>
+    </bean>
+    
+    
+</beans>

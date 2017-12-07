@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 27-mar-2014 17:27:01 by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="bo.edu.uto.dea.jhs.persistence.ContenidoRespuesta" table="contenido_respuesta" schema="public">
+        <id name="idContenidoRespuesta" type="long">
+            <column name="id_contenido_respuesta" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="contenidoRespuestaByIdContenidoRespuestaCalifica" class="bo.edu.uto.dea.jhs.persistence.ContenidoRespuesta" fetch="select">
+            <column name="id_contenido_respuesta_califica" />
+        </many-to-one>
+        <many-to-one name="contenidoRespuestaByIdContenidoRespuestaPredecesor" class="bo.edu.uto.dea.jhs.persistence.ContenidoRespuesta" fetch="select">
+            <column name="id_contenido_respuesta_predecesor" />
+        </many-to-one>
+        <many-to-one name="estructuraRespuesta" class="bo.edu.uto.dea.jhs.persistence.EstructuraRespuesta" fetch="select">
+            <column name="id_estructura_respuesta" not-null="true" />
+        </many-to-one>
+        <many-to-one name="contenido" class="bo.edu.uto.dea.jhs.persistence.Contenido" fetch="select">
+            <column name="id_contenido" not-null="true" />
+        </many-to-one>
+        <property name="respuesta" type="string">
+            <column name="respuesta" not-null="true" />
+        </property>
+        <property name="nota" type="java.lang.Double">
+            <column name="nota" precision="17" scale="17" />
+        </property>
+        <property name="calificable" type="java.lang.Double">
+            <column name="calificable" precision="17" scale="17" />
+        </property>
+        <property name="respuestaValida" type="java.lang.Double">
+            <column name="respuesta_valida" precision="17" scale="17" />
+        </property>
+        <set name="contenidoRespuestasForIdContenidoRespuestaPredecesor" inverse="true">
+            <key>
+                <column name="id_contenido_respuesta_predecesor" />
+            </key>
+            <one-to-many class="bo.edu.uto.dea.jhs.persistence.ContenidoRespuesta" />
+        </set>
+        <set name="contenidoRespuestasForIdContenidoRespuestaCalifica" inverse="true">
+            <key>
+                <column name="id_contenido_respuesta_califica" />
+            </key>
+            <one-to-many class="bo.edu.uto.dea.jhs.persistence.ContenidoRespuesta" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 27-mar-2014 17:27:01 by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="bo.edu.uto.dea.jhs.persistence.IdentificadorRegistroFormulario" table="identificador_registro_formulario" schema="public">
+        <id name="idIdentificadorRegistroFormulario" type="long">
+            <column name="id_identificador_registro_formulario" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="documento" class="bo.edu.uto.dea.jhs.persistence.Documento" fetch="select">
+            <column name="id_documento" not-null="true" />
+        </many-to-one>
+        <many-to-one name="identificadorRegistroMateria" class="bo.edu.uto.dea.jhs.persistence.IdentificadorRegistroMateria" fetch="select">
+            <column name="id_identificador_registro_materia" not-null="true" />
+        </many-to-one>
+        <many-to-one name="persona" class="bo.edu.uto.dea.jhs.persistence.Persona" fetch="select">
+            <column name="ci" length="20" not-null="true" />
+        </many-to-one>
+        <set name="estructuraRespuestas" inverse="true">
+            <key>
+                <column name="id_identificador_registro_formulario" not-null="true" />
+            </key>
+            <one-to-many class="bo.edu.uto.dea.jhs.persistence.EstructuraRespuesta" />
+        </set>
+    </class>
+</hibernate-mapping>

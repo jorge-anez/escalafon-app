@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 14-abr-2014 4:37:46 by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="bo.edu.uto.dea.jhs.persistence.Carrera" table="carrera" schema="public">
+        <id name="idCarrera" type="long">
+            <column name="id_carrera" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="facultad" class="bo.edu.uto.dea.jhs.persistence.Facultad" fetch="select">
+            <column name="id_facultad" not-null="true" />
+        </many-to-one>
+        <property name="siglaCarrera" type="string">
+            <column name="sigla_carrera" length="10" not-null="true" />
+        </property>
+        <property name="nombre" type="string">
+            <column name="nombre" length="100" />
+        </property>
+        <property name="estado" type="string">
+            <column name="estado" length="20" />
+        </property>
+        <set name="materias" inverse="true">
+            <key>
+                <column name="id_carrera" not-null="true" />
+            </key>
+            <one-to-many class="bo.edu.uto.dea.jhs.persistence.Materia" />
+        </set>
+        <set name="directorCarreras" inverse="true">
+            <key>
+                <column name="id_carrera" not-null="true" />
+            </key>
+            <one-to-many class="bo.edu.uto.dea.jhs.persistence.DirectorCarrera" />
+        </set>
+        <set name="comisionEvaluadoras" inverse="true">
+            <key>
+                <column name="id_carrera" not-null="true" />
+            </key>
+            <one-to-many class="bo.edu.uto.dea.jhs.persistence.ComisionEvaluadora" />
+        </set>
+        <set name="docenteEscalafons" inverse="true">
+            <key>
+                <column name="id_carrera" not-null="true" />
+            </key>
+            <one-to-many class="bo.edu.uto.dea.jhs.persistence.DocenteEscalafon" />
+        </set>
+    </class>
+</hibernate-mapping>

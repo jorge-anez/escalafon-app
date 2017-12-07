@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 27-mar-2014 17:27:01 by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="bo.edu.uto.dea.jhs.persistence.Documento" table="documento" schema="public">
+        <id name="idDocumento" type="long">
+            <column name="id_documento" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="evaluacion" class="bo.edu.uto.dea.jhs.persistence.Evaluacion" fetch="select">
+            <column name="id_evaluacion" not-null="true" />
+        </many-to-one>
+        <many-to-one name="formulario" class="bo.edu.uto.dea.jhs.persistence.Formulario" fetch="select">
+            <column name="id_formulario" not-null="true" />
+        </many-to-one>
+        <property name="fechaInicio" type="timestamp">
+            <column name="fecha_inicio" length="29" not-null="true" />
+        </property>
+        <property name="fechaFin" type="timestamp">
+            <column name="fecha_fin" length="29" not-null="true" />
+        </property>
+        <property name="estado" type="string">
+            <column name="estado" length="20" not-null="true" />
+        </property>
+        <set name="identificadorRegistroFormularios" inverse="true">
+            <key>
+                <column name="id_documento" not-null="true" />
+            </key>
+            <one-to-many class="bo.edu.uto.dea.jhs.persistence.IdentificadorRegistroFormulario" />
+        </set>
+    </class>
+</hibernate-mapping>

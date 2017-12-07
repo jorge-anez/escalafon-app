@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 14-abr-2014 4:37:46 by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="bo.edu.uto.dea.jhs.persistence.Materia" table="materia" schema="public">
+        <id name="idMateria" type="long">
+            <column name="id_materia" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="carrera" class="bo.edu.uto.dea.jhs.persistence.Carrera" fetch="select">
+            <column name="id_carrera" not-null="true" />
+        </many-to-one>
+        <property name="siglaMateria" type="string">
+            <column name="sigla_materia" length="10" not-null="true" />
+        </property>
+        <property name="nombre" type="string">
+            <column name="nombre" length="100" />
+        </property>
+        <property name="estado" type="string">
+            <column name="estado" length="20" />
+        </property>
+        <set name="requiereMateriasForIdMateriaRequisito" inverse="true">
+            <key>
+                <column name="id_materia_requisito" not-null="true" />
+            </key>
+            <one-to-many class="bo.edu.uto.dea.jhs.persistence.RequiereMateria" />
+        </set>
+        <set name="requiereMateriasForIdMateria" inverse="true">
+            <key>
+                <column name="id_materia" not-null="true" />
+            </key>
+            <one-to-many class="bo.edu.uto.dea.jhs.persistence.RequiereMateria" />
+        </set>
+        <set name="relacionDocenteMaterias" inverse="true">
+            <key>
+                <column name="id_materia" not-null="true" />
+            </key>
+            <one-to-many class="bo.edu.uto.dea.jhs.persistence.RelacionDocenteMateria" />
+        </set>
+    </class>
+</hibernate-mapping>

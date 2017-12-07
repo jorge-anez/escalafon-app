@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 27-mar-2014 17:27:01 by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="bo.edu.uto.dea.jhs.persistence.EstructuraRespuesta" table="estructura_respuesta" schema="public">
+        <id name="idEstructuraRespuesta" type="long">
+            <column name="id_estructura_respuesta" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="estructura" class="bo.edu.uto.dea.jhs.persistence.Estructura" fetch="select">
+            <column name="id_estructura" not-null="true" />
+        </many-to-one>
+        <many-to-one name="identificadorRegistroFormulario" class="bo.edu.uto.dea.jhs.persistence.IdentificadorRegistroFormulario" fetch="select">
+            <column name="id_identificador_registro_formulario" not-null="true" />
+        </many-to-one>
+        <many-to-one name="estructuraRespuestaByIdEstructuraRespuestaPadre" class="bo.edu.uto.dea.jhs.persistence.EstructuraRespuesta" fetch="select">
+            <column name="id_estructura_respuesta_padre" />
+        </many-to-one>
+        <many-to-one name="estructuraRespuestaByIdEstructuraRespuestaPredecesor" class="bo.edu.uto.dea.jhs.persistence.EstructuraRespuesta" fetch="select">
+            <column name="id_estructura_respuesta_predecesor" />
+        </many-to-one>
+        <property name="tipo" type="string">
+            <column name="tipo" length="40" not-null="true" />
+        </property>
+        <property name="hijos" type="string">
+            <column name="hijos" />
+        </property>
+        <property name="formato" type="string">
+            <column name="formato" length="40" not-null="true" />
+        </property>
+        <set name="estructuraRespuestasForIdEstructuraRespuestaPadre" inverse="true">
+            <key>
+                <column name="id_estructura_respuesta_padre" />
+            </key>
+            <one-to-many class="bo.edu.uto.dea.jhs.persistence.EstructuraRespuesta" />
+        </set>
+        <set name="estructuraRespuestasForIdEstructuraRespuestaPredecesor" inverse="true">
+            <key>
+                <column name="id_estructura_respuesta_predecesor" />
+            </key>
+            <one-to-many class="bo.edu.uto.dea.jhs.persistence.EstructuraRespuesta" />
+        </set>
+        <set name="contenidoRespuestas" inverse="true">
+            <key>
+                <column name="id_estructura_respuesta" not-null="true" />
+            </key>
+            <one-to-many class="bo.edu.uto.dea.jhs.persistence.ContenidoRespuesta" />
+        </set>
+    </class>
+</hibernate-mapping>

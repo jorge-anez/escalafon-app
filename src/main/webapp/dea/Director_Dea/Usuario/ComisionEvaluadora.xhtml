@@ -1,0 +1,305 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui" xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body id="bodyUniversidad" >
+
+        <p:growl id="mensajesDeaDirdeaUniacadUniverisdad" showDetail="true" life="3000" />
+        <h:outputText value="Universidad " />
+        <p:selectOneMenu value="#{universidadBean.siglaUniversidad}" style="width: 300px" >
+            <f:selectItem itemLabel="Seleccionar Universidad" itemValue="-" />
+            <f:selectItems value="#{universidadBean.listaMap}" var="universidades" itemLabel="#{universidades}" itemValue="#{universidades}" />
+            <p:ajax event="change" listener="#{facultadBean.obtenerFacultads}" update=":main:mensajesDeaDirdeaUniacadUniverisdad dataTableUniversidad :main:id_crearUniversidad :main:select_Facultad" />
+        </p:selectOneMenu>
+
+        <h:outputText  value="Facultad " />
+        <p:selectOneMenu id="select_Facultad" value="#{facultadBean.idFacultad}" style="width: 300px" >
+            <f:selectItem itemLabel="Seleccionar Facultad" itemValue="0" />
+            <f:selectItems value="#{facultadBean.listaMap}" var="facultades" itemLabel="#{facultades}" itemValue="#{facultades}" />
+            <p:ajax event="change" listener="#{carreraBean.obtenerCarreras}" update=":main:mensajesDeaDirdeaUniacadUniverisdad dataTableUniversidad :main:id_crearUniversidad :main:select_Carrera" />
+        </p:selectOneMenu>
+
+        <h:outputText  value="Carrera " />
+        <p:selectOneMenu id="select_Carrera" value="#{carreraBean.idCarrera}" style="width: 300px" >
+            <f:selectItem itemLabel="Seleccionar Carrera" itemValue="0" />
+            <f:selectItems value="#{carreraBean.listaMap}" var="carreras" itemLabel="#{carreras}" itemValue="#{carreras}" />
+            <p:ajax event="change" listener="#{comisionEvaluadoraBean.obtenerComisionEvaluadoras}" update=":main:mensajesDeaDirdeaUniacadUniverisdad dataTableUniversidad :main:id_crearUniversidad" />
+        </p:selectOneMenu>
+
+        <p:dataTable id="dataTableUniversidad" var="universidad" value="#{comisionEvaluadoraBean.lista}" rowKey="#{universidad.idComisionEvaluadora}" selection="#{comisionEvaluadoraBean.comisionEvaluadoraBeanSeleccionado}" selectionMode="single" filteredValue="#{comisionEvaluadoraBean.filtroComisionEvaluadoraBeans}" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" editable="true" >
+            <f:facet name="header" >
+                Usuarios Comision Evaluadora
+            </f:facet>
+
+            <p:ajax event="rowEdit" listener="#{comisionEvaluadoraBean.onEdit}" update=":main:mensajesDeaDirdeaUniacadUniverisdad" />
+
+            <p:ajax event="rowEditCancel" listener="#{comisionEvaluadoraBean.onCancel}" update=":main:mensajesDeaDirdeaUniacadUniverisdad" />
+
+            <p:column headerText="Miembros" style="width: 4%" >
+                <p:commandButton action="#{comisionEvaluadoraBean.obtenerMiembroComisionEvaluadoraBeans}" id="selectButton" update=":main:dialog_requisito_materia :main:mensajesDeaDirdeaUniacadUniverisdad :main:id_crearMiembroComisionEvaluadora" oncomplete="crearRequisitoMateriaDlg.show()" icon="ui-icon-search" title="Miembros" >
+                    <f:setPropertyActionListener value="#{universidad}" target="#{comisionEvaluadoraBean.comisionEvaluadoraBeanSeleccionado}" />
+                </p:commandButton>
+            </p:column>
+
+            <p:column headerText="IdComisionEvaluadora" sortBy="idComisionEvaluadora" filterBy="idComisionEvaluadora" rendered="false" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.idComisionEvaluadora}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:inputText value="#{universidad.idComisionEvaluadora}" style="width: 100%" disabled="true" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Es Evaluado por"  sortBy="nombreComisionEvaluadoraEvaluar" filterBy="nombreComisionEvaluadoraEvaluar">
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.nombreComisionEvaluadoraEvaluar}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:inputText value="#{universidad.nombreComisionEvaluadoraEvaluar}" style="width: 100%" disabled="true" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Gestion"  sortBy="gestion" filterBy="gestion" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.gestion}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:inputText value="#{universidad.gestion}" style="width: 100%" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Fecha Inicio"  sortBy="fechaInicio" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.fechaInicio}" >
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                        </h:outputText>
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:calendar value="#{universidad.fechaInicio}" showOn="button" pattern="dd/MM/yyyy HH:mm" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Fecha Fin"  sortBy="fechaFin" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.fechaFin}" >
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                        </h:outputText>
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:calendar value="#{universidad.fechaFin}" showOn="button" pattern="dd/MM/yyyy HH:mm" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Estado" sortBy="estado" filterBy="estado" filterOptions="#{comisionEvaluadoraBean.estadosOptions}" filterMatchMode="exact" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.estado}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:selectOneMenu value="#{universidad.estado}" style="width: 100%" >
+                            <f:selectItems value="#{universidad.estados}" var="estados" itemLabel="#{estados}" itemValue="#{estados}" />
+                        </p:selectOneMenu>
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column style="width: 6%">
+                <p:rowEditor />
+            </p:column> 
+
+        </p:dataTable>
+
+        <h:panelGrid columns="2" cellpadding="5" >
+            <p:commandButton id="crearUniversidad" value="Nuevo Registro" onclick="crearUniversidadDlg.show();" type="button" />
+        </h:panelGrid>
+
+        <p:dialog id="id_crearUniversidad" header="Miembros de la Comision" widgetVar="crearUniversidadDlg" showEffect="explode" resizable="false" width="500" >
+            <h:panelGrid id="contents" columns="3" style="margin-bottom: 10px" >                
+
+                <h:outputLabel value="Gestion" />
+                <h:inputText value="#{comisionEvaluadoraBean.gestion}" required="true" style="width: 300px" />
+                <h:outputLabel value="  " />
+
+                <h:outputLabel value="Fecha Inicio" />
+                <p:calendar value="#{comisionEvaluadoraBean.fechaInicio}" showOn="button" pattern="dd/MM/yyyy HH:mm" onkeypress="anularKey(event)" />
+                <h:outputLabel value="  " />
+
+                <h:outputLabel value="Fecha Fin" />
+                <p:calendar value="#{comisionEvaluadoraBean.fechaFin}" showOn="button" pattern="dd/MM/yyyy HH:mm" onkeypress="anularKey(event)"  />
+                <h:outputLabel value="  " /> 
+
+                <h:outputLabel value="Id Carrera" />
+                <h:inputText value="#{comisionEvaluadoraBean.idCarreraBean}" required="true" style="width: 300px" disabled="true" />
+                <h:outputLabel value="  " /> 
+
+            </h:panelGrid>
+
+            <h:outputLabel value="  " />
+            <p:commandButton value="Crear"  actionListener="#{comisionEvaluadoraBean.crearComisionEvaluadora}" update="dataTableUniversidad mensajesDeaDirdeaUniacadUniverisdad main" oncomplete="crearUniversidadDlg.hide()" />
+        </p:dialog>
+
+        <p:dialog id="dialog_requisito_materia" header="Miembros de la Comision Seleccionada" widgetVar="crearRequisitoMateriaDlg" showEffect="explode" resizable="false" width="1200" >
+            <h:panelGrid columns="2" style="margin-bottom: 10px" >
+                <h:outputLabel value="Id" />
+                <h:outputText value="#{comisionEvaluadoraBean.comisionEvaluadoraBeanSeleccionado.idComisionEvaluadora}" />
+
+                <h:outputLabel value="Gestion" />
+                <h:outputText value="#{comisionEvaluadoraBean.comisionEvaluadoraBeanSeleccionado.gestion}" />
+
+                <h:outputLabel value="Desde" />
+                <h:outputText value="#{comisionEvaluadoraBean.comisionEvaluadoraBeanSeleccionado.fechaInicio}" >
+                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                </h:outputText>
+
+                <h:outputLabel value="Hasta" />
+                <h:outputText value="#{comisionEvaluadoraBean.comisionEvaluadoraBeanSeleccionado.fechaFin}" >
+                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                </h:outputText>
+
+                <h:outputLabel value="Estado" />
+                <h:outputText value="#{comisionEvaluadoraBean.comisionEvaluadoraBeanSeleccionado.estado}" />
+
+                <h:outputLabel value="Evaluado por" />
+                <h:outputText value="#{comisionEvaluadoraBean.comisionEvaluadoraBeanSeleccionado.nombreComisionEvaluadoraEvaluar}" />
+
+            </h:panelGrid>
+            
+            <h:panelGrid columns="2" cellpadding="5" >
+                <p:commandButton id="crearMiembroComisionEvaluadora" value="Asignar Nuevo Formulario" update=":main:id_crearMiembroComisionEvaluadora" onclick="crearMiembroComisionEvaluadoraDlg.show();" type="button" />
+            </h:panelGrid>
+            
+            <p:dataTable id="dataTableRequiereMaterias" var="requiereMateria" value="#{comisionEvaluadoraBean.listaMiembroComisionEvaluadoraBeans}" paginator="true" rows="4" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="4,8,10,15" editable="true" >
+                <f:facet name="header" >
+                    Miembros
+                </f:facet>
+
+                <p:ajax event="rowEdit" listener="#{comisionEvaluadoraBean.onEditMiembroComisionEvaluadoraBean}" update=":main:dataTableRequiereMaterias :main:mensajesDeaDirdeaUniacadUniverisdad" />
+                <p:ajax event="rowEditCancel" listener="#{comisionEvaluadoraBean.onCancelMiembroComisionEvaluadoraBean}" update=":main:dataTableRequiereMaterias :main:mensajesDeaDirdeaUniacadUniverisdad" />
+
+                <p:column headerText="idMiembroComisionEvaluadora" rendered="false" > 
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{requiereMateria.idMiembroComisionEvaluadora}" />
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputText value="#{requiereMateria.idMiembroComisionEvaluadora}" disabled="true" />
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="C.I."  >
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{requiereMateria.ci}" />
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputText value="#{requiereMateria.ci}" disabled="true" />
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Nombre"  >
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{requiereMateria.docenteBean.nombreCompleto}" />
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputText value="#{requiereMateria.docenteBean.nombreCompleto}" disabled="true" />
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Desde"  >
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{requiereMateria.fechaInicio}" >
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                            </h:outputText>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:calendar value="#{requiereMateria.fechaInicio}" showOn="button" pattern="dd/MM/yyyy HH:mm" />
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Hasta"  >
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{requiereMateria.fechaFin}" >
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                            </h:outputText>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:calendar value="#{requiereMateria.fechaFin}" showOn="button" pattern="dd/MM/yyyy HH:mm" />
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Estado" >
+                    <p:cellEditor>
+                        <f:facet name="output" >
+                            <h:outputText value="#{requiereMateria.estado}" />
+                        </f:facet>
+                        <f:facet name="input" >
+                            <p:selectOneMenu value="#{requiereMateria.estado}"  >
+                                <f:selectItems value="#{requiereMateria.estados}" var="estadoss" itemLabel="#{estadoss}" itemValue="#{estadoss}" />
+                            </p:selectOneMenu>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column style="width: 6%">
+                    <p:rowEditor />
+                </p:column>
+
+            </p:dataTable>
+
+        </p:dialog>
+        
+        <p:dialog id="id_crearMiembroComisionEvaluadora" header="Nuevo Miembro" widgetVar="crearMiembroComisionEvaluadoraDlg" showEffect="explode" resizable="false" width="900" >
+            <h:panelGrid columns="3" style="margin-bottom: 10px" >
+                <h:outputLabel value="C.I." />
+                <h:inputText value="#{comisionEvaluadoraBean.miembroComisionEvaluadoraBean.ci}" required="true" />
+                <p:commandButton id="buscarDirectorDEA" actionListener="#{comisionEvaluadoraBean.obtenerDocente}" update=":main:contentsMiembroComisionEvaluadora :main:mensajesDeaDirdeaUniacadUniverisdad" icon="ui-icon-search" title="Buscar Docente" />
+            </h:panelGrid>
+            <h:panelGrid id="contentsMiembroComisionEvaluadora" columns="2" style="margin-bottom: 10px" >
+                <h:outputLabel value="IdComisionEvaluadora" />
+                <h:inputText value="#{comisionEvaluadoraBean.miembroComisionEvaluadoraBean.idComisionEvaluadoraBean}" required="true" style="width: 300px" readonly="true" />
+                
+                <h:outputLabel value="Nombre Docente" />
+                <h:inputText value="#{comisionEvaluadoraBean.miembroComisionEvaluadoraBean.docenteBean.nombreCompleto}" required="true" style="width: 300px" readonly="true" />
+                                
+                <h:outputLabel value="Desde" />
+                <p:calendar value="#{comisionEvaluadoraBean.miembroComisionEvaluadoraBean.fechaInicio}" showOn="button" pattern="dd/MM/yyyy HH:mm" onkeypress="anularKey(event)" />
+
+                <h:outputLabel value="Hasta" />
+                <p:calendar value="#{comisionEvaluadoraBean.miembroComisionEvaluadoraBean.fechaFin}" showOn="button" pattern="dd/MM/yyyy HH:mm" onkeypress="anularKey(event)" />
+                
+            </h:panelGrid>
+            <p:commandButton value="Asignar Docente a la Comision Evaluadora"  actionListener="#{comisionEvaluadoraBean.crearMiembroComisionEvaluadora}" update=":main:dialog_requisito_materia :main:mensajesDeaDirdeaUniacadUniverisdad" oncomplete="crearMiembroComisionEvaluadoraDlg.hide()" />
+        </p:dialog>
+
+        <script type="text/javascript">
+                function anularKey(e) {
+                    e.keyCode = 0;
+                }
+        </script>
+
+
+    </h:body>
+</html>

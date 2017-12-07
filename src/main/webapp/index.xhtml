@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        
+        <p:panel id="dialog" header="Login" style="width: 300px" >
+
+            <h:form id="formVeificarUsuario">
+
+                <p:growl id="growl" showDetail="true" life="3000"/>
+                
+                <h:panelGrid columns="2" cellpadding="5">
+                    <h:outputLabel for="username" value="Username:"/>
+                    <p:inputText value="#{usuarioBean.cuenta}" id="username" required="true" label="username"/>
+
+                    <h:outputLabel for="contrasenia" value="Contraseña:"/>
+                    <p:password value="#{usuarioBean.contrasenia}" id="contrasenia" required="true" label="contraseña" />
+
+                    <f:facet name="footer">
+                        <p:commandButton id="loginButton" value="Ingresar" update="growl" action="#{usuarioBean.verificarUsuario}" oncomplete="manejarLogin(xhr,status,args)" />
+
+                    </f:facet>
+                </h:panelGrid>
+            </h:form>
+
+        </p:panel>
+
+    </h:body>
+    <script type="text/javascript">
+        function manejarLogin(xhr, status, args) {
+            if (args.validationFailed || !args.loggedIn) {
+                //setTimeout(null, 5000);
+                setTimeout(function() {
+                    window.location = args.view;
+                }, 500);
+            }
+            else{
+                setTimeout(function() {
+                    window.location = args.view;
+                }, 500);
+            }
+        }
+    </script>
+</html>

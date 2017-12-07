@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 14-abr-2014 4:37:46 by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="bo.edu.uto.dea.jhs.persistence.Facultad" table="facultad" schema="public">
+        <id name="idFacultad" type="long">
+            <column name="id_facultad" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="universidad" class="bo.edu.uto.dea.jhs.persistence.Universidad" fetch="select">
+            <column name="sigla_universidad" length="10" />
+        </many-to-one>
+        <property name="siglaFacultad" type="string">
+            <column name="sigla_facultad" length="10" />
+        </property>
+        <property name="nombre" type="string">
+            <column name="nombre" length="100" />
+        </property>
+        <property name="estado" type="string">
+            <column name="estado" length="20" />
+        </property>
+        <set name="carreras" inverse="true">
+            <key>
+                <column name="id_facultad" not-null="true" />
+            </key>
+            <one-to-many class="bo.edu.uto.dea.jhs.persistence.Carrera" />
+        </set>
+    </class>
+</hibernate-mapping>

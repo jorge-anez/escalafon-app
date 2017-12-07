@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 14-abr-2014 4:37:46 by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="bo.edu.uto.dea.jhs.persistence.Resolucion" table="resolucion" schema="public">
+        <id name="idResolucion" type="long">
+            <column name="id_resolucion" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="cartilla" class="bo.edu.uto.dea.jhs.persistence.Cartilla" fetch="select">
+            <column name="id_cartilla" not-null="true" />
+        </many-to-one>
+        <property name="contenido" type="string">
+            <column name="contenido" not-null="true" />
+        </property>
+        <property name="gestion" type="string">
+            <column name="gestion" length="5" not-null="true" />
+        </property>
+        <property name="puntajeEscalafon" type="double">
+            <column name="puntaje_escalafon" precision="17" scale="17" not-null="true" />
+        </property>
+        <property name="puntajeAcumulado" type="double">
+            <column name="puntaje_acumulado" precision="17" scale="17" not-null="true" />
+        </property>
+        <property name="categoria" type="string">
+            <column name="categoria" length="30" not-null="true" />
+        </property>
+        <property name="tipoResolucion" type="string">
+            <column name="tipo_resolucion" length="30" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

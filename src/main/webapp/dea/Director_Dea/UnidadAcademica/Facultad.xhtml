@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body id="bodyUniversidad" >
+
+        <p:growl id="mensajesDeaDirdeaUniacadFacultad" showDetail="true" life="3000" />
+        <h:outputText value="Universidad " />
+        <p:selectOneMenu value="#{universidadBean.siglaUniversidad}" style="width: 300px" >
+            <f:selectItem itemLabel="Seleccionar Universidad" itemValue="-" />
+            <f:selectItems value="#{universidadBean.listaMap}" var="universidades" itemLabel="#{universidades}" itemValue="#{universidades}" />
+            <p:ajax event="change" listener="#{facultadBean.obtenerFacultads}" update=":main:mensajesDeaDirdeaUniacadFacultad dataTableFacultad :main:id_crearFacultad" />
+        </p:selectOneMenu>
+
+        <p:dataTable id="dataTableFacultad" var="universidad" value="#{facultadBean.lista}" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" editable="true" >
+            <f:facet name="header" >
+                Facultades
+            </f:facet>
+
+            <p:ajax event="rowEdit" listener="#{facultadBean.onEdit}" update=":main:mensajesDeaDirdeaUniacadFacultad" />
+
+            <p:ajax event="rowEditCancel" listener="#{facultadBean.onCancel}" update=":main:mensajesDeaDirdeaUniacadFacultad" />
+
+            <p:column headerText="idFacultad" rendered="false" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.idFacultad}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:inputText value="#{universidad.idFacultad}" style="width: 100%" disabled="true" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Sigla" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.siglaFacultad}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:inputText value="#{universidad.siglaFacultad}" style="width: 100%"  disabled="true" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Nombre" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.nombre}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:inputText value="#{universidad.nombre}" style="width: 100%" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Sigla Universidad" rendered="false" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.siglaUniversidad}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:inputText value="#{universidad.siglaUniversidad}" style="width: 100%"  disabled="true" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Estado" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.estado}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:selectOneMenu value="#{universidad.estado}" style="width: 100%" >
+                            <f:selectItems value="#{universidad.estados}" var="estados" itemLabel="#{estados}" itemValue="#{estados}" />
+                        </p:selectOneMenu>
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column style="width: 6%">
+                <p:rowEditor />
+            </p:column>
+
+        </p:dataTable>
+
+        <h:panelGrid columns="2" cellpadding="5" >
+            <p:commandButton id="crearUniversidad" value="Nuevo Registro" onclick="crearFacultadDlg.show();" type="button" />
+        </h:panelGrid>
+
+        <p:dialog id="id_crearFacultad" header="Crear Facultad" widgetVar="crearFacultadDlg" showEffect="explode" resizable="false" width="500" >
+            <h:panelGrid columns="2" style="margin-bottom: 10px" >
+                <h:outputLabel value="Sigla" />
+                <h:inputText value="#{facultadBean.siglaFacultad}" required="true" />
+
+                <h:outputLabel value="Nombre" />
+                <h:inputText value="#{facultadBean.nombre}" required="true" style="width: 400px" />
+
+                <h:outputLabel value="Sigla Universidad" />
+                <h:inputText value="#{facultadBean.nombre}" disabled="true" style="width: 400px" />
+
+                <h:outputLabel value="Nombre Univesidad" />
+                <p:selectOneMenu value="#{universidadBean.siglaUniversidad}" style="width: 300px" disabled="true" >
+                    <f:selectItem itemLabel="Seleccionar Universidad" itemValue="" />
+                    <f:selectItems value="#{universidadBean.listaMap}" var="universidades" itemLabel="#{universidades}" itemValue="#{universidades}" />
+                    <p:ajax event="change" listener="#{facultadBean.obtenerFacultads}" update=":main:mensajesDeaDirdeaUniacadFacultad dataTableFacultad :main:id_crearFacultad" />
+                </p:selectOneMenu>
+
+                <p:commandButton value="Crear"  actionListener="#{facultadBean.crearFacultad}" update="dataTableFacultad :main:mensajesDeaDirdeaUniacadFacultad" oncomplete="crearFacultadDlg.hide()" />
+            </h:panelGrid>
+        </p:dialog>
+
+    </h:body>
+</html>

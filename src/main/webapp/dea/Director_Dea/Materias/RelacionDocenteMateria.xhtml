@@ -1,0 +1,333 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body id="bodyUniversidad" >
+
+        <p:growl id="mensajesDeaDirdeaUniacadFacultad" showDetail="true" life="3000" />
+
+        <h:outputText value="Universidad " />
+        <p:selectOneMenu value="#{universidadBean.siglaUniversidad}" style="width: 300px" >
+            <f:selectItem itemLabel="Seleccionar Universidad" itemValue="-" />
+            <f:selectItems value="#{universidadBean.listaMap}" var="universidades" itemLabel="#{universidades}" itemValue="#{universidades}" />
+            <p:ajax event="change" listener="#{facultadBean.obtenerFacultads}" update=":main:mensajesDeaDirdeaUniacadFacultad dataTableFacultad :main:id_crearFacultad :main:select_Facultad" />
+        </p:selectOneMenu>
+
+        <h:outputText  value="Facultad " />
+        <p:selectOneMenu id="select_Facultad" value="#{facultadBean.idFacultad}" style="width: 300px" >
+            <f:selectItem itemLabel="Seleccionar Facultad" itemValue="0" />
+            <f:selectItems value="#{facultadBean.listaMap}" var="facultades" itemLabel="#{facultades}" itemValue="#{facultades}" />
+            <p:ajax event="change" listener="#{carreraBean.obtenerCarreras}" update=":main:mensajesDeaDirdeaUniacadFacultad dataTableFacultad :main:id_crearFacultad :main:select_Carrera" />
+        </p:selectOneMenu>
+
+        <h:outputText  value="Carrera " />
+        <p:selectOneMenu id="select_Carrera" value="#{carreraBean.idCarrera}" style="width: 300px" >
+            <f:selectItem itemLabel="Seleccionar Carrera" itemValue="0" />
+            <f:selectItems value="#{carreraBean.listaMap}" var="carreras" itemLabel="#{carreras}" itemValue="#{carreras}" />
+            <p:ajax event="change" listener="#{relacionDocenteMateriaBean.obtenerRelacionDocenteMaterias}" update=":main:mensajesDeaDirdeaUniacadFacultad dataTableFacultad :main:id_crearFacultad" />
+        </p:selectOneMenu>
+
+        <p:dataTable id="dataTableFacultad" var="universidad" value="#{relacionDocenteMateriaBean.lista}" rowKey="#{universidad.idRelacionDocenteMateria}" selection="#{relacionDocenteMateriaBean.relacionDocenteMateriaBeanSeleccionado}" selectionMode="single" filteredValue="#{relacionDocenteMateriaBean.filtroRelacionDocenteMateriaBeans}" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" editable="true" >
+            <f:facet name="header" >
+                Materias
+            </f:facet>
+
+            <p:ajax event="rowEdit" listener="#{relacionDocenteMateriaBean.onEdit}" update=":main:mensajesDeaDirdeaUniacadFacultad" />
+            <p:ajax event="rowEditCancel" listener="#{relacionDocenteMateriaBean.onCancel}" update=":main:mensajesDeaDirdeaUniacadFacultad" />
+
+            <p:column headerText="" style="width: 4%" >
+                <p:commandButton action="#{relacionDocenteMateriaBean.cargarEstudiantesDocumentos}" id="selectButton" update=":main:dialog_requisito_materia :main:mensajesDeaDirdeaUniacadFacultad" oncomplete="crearRequisitoMateriaDlg.show()" icon="ui-icon-search" title="Requisito Materia" >
+                    <f:setPropertyActionListener value="#{universidad}" target="#{relacionDocenteMateriaBean.relacionDocenteMateriaBeanSeleccionado}" />
+                </p:commandButton>
+            </p:column>
+
+            <p:column headerText="idRelacionDocenteMateria" rendered="false" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.idRelacionDocenteMateria}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:inputText value="#{universidad.idRelacionDocenteMateria}" disabled="true" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Sigla" sortBy="materiaBean.siglaMateria" filterBy="materiaBean.siglaMateria" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.materiaBean.siglaMateria}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:inputText value="#{universidad.materiaBean.siglaMateria}" disabled="true" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Nombre" sortBy="materiaBean.nombre" filterBy="materiaBean.nombre"  >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.materiaBean.nombre}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:inputText value="#{universidad.materiaBean.nombre}" disabled="true" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Paralelo" sortBy="paralelo" filterBy="paralelo" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.paralelo}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:inputText value="#{universidad.paralelo}" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Nota" sortBy="paralelo" filterBy="paralelo" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.evaluacionBean.nota}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:inputText value="#{universidad.evaluacionBean.nota}" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Docente" sortBy="docenteBean.nombreCompleto" filterBy="docenteBean.nombreCompleto" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.docenteBean.nombreCompleto}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:inputText value="#{universidad.docenteBean.nombreCompleto}" disabled="true" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Periodo" sortBy="periodo" filterBy="periodo" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.periodo}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:inputText value="#{universidad.periodo}" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Tipo Periodo" sortBy="tipoPeriodo" filterBy="tipoPeriodo" filterOptions="#{relacionDocenteMateriaBean.tipoPeriodosOptions}" filterMatchMode="exact" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.tipoPeriodo}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:selectOneMenu value="#{universidad.tipoPeriodo}"  >
+                            <f:selectItems value="#{universidad.tipoPeriodos}" var="tipoPeriodoss" itemLabel="#{tipoPeriodoss}" itemValue="#{tipoPeriodoss}" />
+                        </p:selectOneMenu>
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Gestion" sortBy="gestion" filterBy="gestion"  >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.gestion}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:inputText value="#{universidad.gestion}" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Fecha Inicio"  sortBy="fechaInicio" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.fechaInicio}" >
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                        </h:outputText>
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:calendar value="#{universidad.fechaInicio}" showOn="button" pattern="dd/MM/yyyy HH:mm" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Fecha Fin"  sortBy="fechaFin" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.fechaFin}" >
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                        </h:outputText>
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:calendar value="#{universidad.fechaFin}" showOn="button" pattern="dd/MM/yyyy HH:mm" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Horas" sortBy="horas" filterBy="horas" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.horas}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:inputText value="#{universidad.horas}" />
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Item" sortBy="item" filterBy="item" filterOptions="#{relacionDocenteMateriaBean.itemsOptions}" filterMatchMode="exact" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.item}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:selectOneMenu value="#{universidad.item}" >
+                            <f:selectItems value="#{universidad.items}" var="itemss" itemLabel="#{itemss}" itemValue="#{itemss}" />
+                        </p:selectOneMenu>
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Tipo Materia" sortBy="tipoMateria" filterBy="tipoMateria" filterOptions="#{relacionDocenteMateriaBean.tipoMateriasOptions}" filterMatchMode="exact" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.tipoMateria}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:selectOneMenu value="#{universidad.tipoMateria}" >
+                            <f:selectItems value="#{universidad.tipoMaterias}" var="tipoMateriass" itemLabel="#{tipoMateriass}" itemValue="#{tipoMateriass}" />
+                        </p:selectOneMenu>
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="Estado" sortBy="estado" filterBy="estado" filterOptions="#{relacionDocenteMateriaBean.estadosOptions}" filterMatchMode="exact" >
+                <p:cellEditor>
+                    <f:facet name="output" >
+                        <h:outputText value="#{universidad.estado}" />
+                    </f:facet>
+                    <f:facet name="input" >
+                        <p:selectOneMenu value="#{universidad.estado}" style="width: 100%" >
+                            <f:selectItems value="#{universidad.estados}" var="estadoss" itemLabel="#{estadoss}" itemValue="#{estadoss}" />
+                        </p:selectOneMenu>
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column style="width: 6%">
+                <p:rowEditor />
+            </p:column>
+
+        </p:dataTable>
+
+        <h:panelGrid columns="2" cellpadding="5" >
+            <p:commandButton id="crearUniversidad" value="Nuevo Registro" onclick="crearFacultadDlg.show();" type="button" />
+        </h:panelGrid>
+
+        <p:dialog id="id_crearFacultad" header="Crear Materia para Docente" widgetVar="crearFacultadDlg" showEffect="explode" resizable="false" width="900" >
+            <h:panelGrid columns="3" style="margin-bottom: 10px" >
+                <h:outputLabel value="C.I." />
+                <h:inputText value="#{relacionDocenteMateriaBean.docenteBean.ci}" required="true" />
+                <p:commandButton id="buscarDirectorDEA" actionListener="#{relacionDocenteMateriaBean.obtenerDocente}" update=":main:contents :main:mensajesDeaDirdeaUniacadFacultad" icon="ui-icon-search" title="Buscar Docente" />
+            </h:panelGrid>
+
+            <h:panelGrid id="contents" columns="4" style="margin-bottom: 10px" >
+                <h:outputLabel value="Docente" />
+                <h:inputText value="#{relacionDocenteMateriaBean.docenteBean.nombreCompleto}" required="true" readonly="true" />
+
+                <h:outputLabel value="" />
+                <h:outputLabel value="" />
+
+                <h:outputLabel value="Materia" />
+                <p:selectOneMenu value="#{relacionDocenteMateriaBean.materiaBean.idMateria}" style="width: 300px" >
+                    <f:selectItem itemLabel="Seleccionar Materia" itemValue="0" />
+                    <f:selectItems value="#{relacionDocenteMateriaBean.listaMateriasMap}" var="carreras" itemLabel="#{carreras}" itemValue="#{carreras}" />
+                </p:selectOneMenu>
+
+                <h:outputLabel value="Paralelo" />
+                <h:inputText value="#{relacionDocenteMateriaBean.paralelo}" required="true" />
+
+                <h:outputLabel value="Periodo" />
+                <h:inputText value="#{relacionDocenteMateriaBean.periodo}" required="true" />
+
+                <h:outputLabel value="Tipo Periodo" />
+                <p:selectOneMenu value="#{relacionDocenteMateriaBean.tipoPeriodo}" style="width: 100%" >
+                    <f:selectItems value="#{relacionDocenteMateriaBean.tipoPeriodos}" var="tipoPeriodoss" itemLabel="#{tipoPeriodoss}" itemValue="#{tipoPeriodoss}" />
+                </p:selectOneMenu>
+
+                <h:outputLabel value="Gestion" />
+                <h:inputText value="#{relacionDocenteMateriaBean.gestion}" required="true" />
+
+                <h:outputLabel value="Fecha Inicio" />
+                <p:calendar value="#{relacionDocenteMateriaBean.fechaInicio}" showOn="button" pattern="dd/MM/yyyy HH:mm" onkeypress="anularKey(event)" />
+
+                <h:outputLabel value="Fecha Fin" />
+                <p:calendar value="#{relacionDocenteMateriaBean.fechaFin}" showOn="button" pattern="dd/MM/yyyy HH:mm" onkeypress="anularKey(event)" />
+
+                <h:outputLabel value="Horas" />
+                <h:inputText value="#{relacionDocenteMateriaBean.horas}" required="true" />
+
+                <h:outputLabel value="Item" />
+                <p:selectOneMenu value="#{relacionDocenteMateriaBean.item}" style="width: 100%" >
+                    <f:selectItems value="#{relacionDocenteMateriaBean.items}" var="itemss" itemLabel="#{itemss}" itemValue="#{itemss}" />
+                </p:selectOneMenu>
+
+                <h:outputLabel value="Tipo Materia" />
+                <p:selectOneMenu value="#{relacionDocenteMateriaBean.tipoMateria}" style="width: 100%" >
+                    <f:selectItems value="#{relacionDocenteMateriaBean.tipoMaterias}" var="tipoMateriass" itemLabel="#{tipoMateriass}" itemValue="#{tipoMateriass}" />
+                </p:selectOneMenu>
+
+            </h:panelGrid>
+            <p:commandButton value="Crear"  actionListener="#{relacionDocenteMateriaBean.crearRelacionDocenteMateria}" update=":main:dataTableFacultad :main:mensajesDeaDirdeaUniacadFacultad" oncomplete="crearFacultadDlg.hide()" />
+        </p:dialog>
+
+        <p:dialog id="dialog_requisito_materia" header="Materia" widgetVar="crearRequisitoMateriaDlg" showEffect="explode" width="840" height="480" >
+            <!--p:scrollPanel style="width: 840px;height: 480px"-->
+            <h:panelGrid columns="2" style="margin-bottom: 10px" >
+                <h:outputLabel value="Sigla" />
+                <h:outputText value="#{relacionDocenteMateriaBean.relacionDocenteMateriaBeanSeleccionado.materiaBean.siglaMateria}" />
+
+                <h:outputLabel value="Nombre" />
+                <h:outputText value="#{relacionDocenteMateriaBean.relacionDocenteMateriaBeanSeleccionado.materiaBean.nombre}" />
+
+                <h:outputLabel value="Paralelo" />
+                <h:outputText value="#{relacionDocenteMateriaBean.relacionDocenteMateriaBeanSeleccionado.paralelo}" />    
+
+                <h:outputLabel value="Docente" />
+                <h:outputText value="#{relacionDocenteMateriaBean.relacionDocenteMateriaBeanSeleccionado.docenteBean.nombreCompleto}" />    
+            </h:panelGrid>
+
+            <p:separator />
+            <p:separator />
+            <h:panelGrid columns="2" cellpadding="5" >
+                <p:commandButton id="crearDocumento" value="Asignar Nuevo Formulario" onclick="crearDocumentoDlg.show();" type="button" />
+            </h:panelGrid>
+            
+
+            <p:separator />
+            <p:separator />
+            <h:panelGrid columns="2" cellpadding="5" >
+                <p:commandButton id="crearRelacionEstudianteMateria" value="Agregar Estudiante" onclick="crearRelacionEstudianteMateriaDlg.show();" type="button" />
+            </h:panelGrid>
+          
+
+            <!--/p:scrollPanel-->
+        </p:dialog>
+
+
+        <script type="text/javascript">
+                function anularKey(e) {
+                    e.keyCode = 0;
+                }
+        </script>
+    </h:body>
+</html>

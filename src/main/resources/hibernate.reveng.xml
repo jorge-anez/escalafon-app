@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd">
+<hibernate-reverse-engineering>
+  <schema-selection match-catalog="NuevoEscalafonDocente"/>
+  <table-filter match-name="evaluacion_escalafon"/>
+  <table-filter match-name="facultad"/>
+  <table-filter match-name="escalafon"/>
+  <table-filter match-name="director_carrera"/>
+  <table-filter match-name="resolucion"/>
+  <table-filter match-name="requiere_materia"/>
+  <table-filter match-name="relacion_docente_materia"/>
+  <table-filter match-name="contenido_cartilla"/>
+  <table-filter match-name="estudiante"/>
+  <table-filter match-name="identificador_registro_materia"/>
+  <table-filter match-name="coordinador_dea"/>
+  <table-filter match-name="docente_escalafon"/>
+  <table-filter match-name="evaluacion"/>
+  <table-filter match-name="materia"/>
+  <table-filter match-name="docente"/>
+  <table-filter match-name="universidad"/>
+  <table-filter match-name="relacion_estudiante_materia"/>
+  <table-filter match-name="carrera"/>
+  <table-filter match-name="comision_evaluadora"/>
+  <table-filter match-name="miembro_comision_evaluadora"/>
+  <table-filter match-name="persona"/>
+  <table-filter match-name="cartilla"/>
+  <table-filter match-name="director_dea"/>
+</hibernate-reverse-engineering>

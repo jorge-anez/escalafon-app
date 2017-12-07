@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 14-abr-2014 4:37:46 by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="bo.edu.uto.dea.jhs.persistence.Escalafon" table="escalafon" schema="public">
+        <id name="idEscalafon" type="long">
+            <column name="id_escalafon" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="docenteEscalafon" class="bo.edu.uto.dea.jhs.persistence.DocenteEscalafon" fetch="select">
+            <column name="ci" length="20" not-null="true" />
+        </many-to-one>
+        <many-to-one name="cartilla" class="bo.edu.uto.dea.jhs.persistence.Cartilla" fetch="select">
+            <column name="id_cartilla" not-null="true" />
+        </many-to-one>
+        <property name="puntaje" type="double">
+            <column name="puntaje" precision="17" scale="17" not-null="true" />
+        </property>
+        <property name="puntajeAcumulado" type="double">
+            <column name="puntaje_acumulado" precision="17" scale="17" not-null="true" />
+        </property>
+        <property name="categoria" type="string">
+            <column name="categoria" length="30" not-null="true" />
+        </property>
+        <property name="gestion" type="string">
+            <column name="gestion" length="5" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>
