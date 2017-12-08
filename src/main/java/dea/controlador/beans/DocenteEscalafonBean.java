@@ -96,7 +96,7 @@ public class DocenteEscalafonBean implements Serializable{
     @Autowired
     private EvaluacionDAO evaluacionDAO;    
     @Autowired
-    private EscalafonDAO escalafonDAO; 
+    private EscalafonDAO escalafonDAO;
     private DocenteEscalafon registro;
     private String uSelected;
     private long cSelected,fSelected;

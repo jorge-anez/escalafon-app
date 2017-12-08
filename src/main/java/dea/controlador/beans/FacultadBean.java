@@ -36,7 +36,6 @@ import org.springframework.stereotype.Service;
  */
 @Component
 @Scope("session")
-
 public class FacultadBean implements Serializable{    
     private ArrayList<Universidad> universidadList;
     private ArrayList<Facultad> facultadList; 

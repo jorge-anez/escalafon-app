@@ -6,73 +6,79 @@
 
 package dea.controlador.dao_classes;
 
+import dea.GenericDAOImpl;
 import dea.controlador.dao_interfaces.EscalafonDAOInterface;
 import dea.modelo.Escalafon;
 import java.io.Serializable;
 import java.util.List;
 import java.util.TreeMap;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.PostConstruct;
 
 /**
  *
  * @author Doppler
  */
-@Repository
-public class EscalafonDAO extends GenericDAO<Escalafon,Long> implements EscalafonDAOInterface,Serializable {
+@Service
+@Transactional
+public class EscalafonDAO{
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    private GenericDAOImpl<Escalafon,Long> escalafonDAO;
+    @PostConstruct
+    public void init() {
+        escalafonDAO = new GenericDAOImpl<Escalafon,Long>(sessionFactory, Escalafon.class);
+    }
+
     public List<Escalafon> getHistorial(String ci,String g){
-        Session session=this.getSession();       
-        Transaction trans=session.beginTransaction();        
+        Session session=this.sessionFactory.getCurrentSession();
         List<Escalafon> result=session.createQuery("from Escalafon e where e.docenteEscalafon.ci=:ci and e.gestion<=:g order by e.gestion DESC").setParameter("ci",ci).setParameter("g", g).setMaxResults(5).list();
-//Persona p=(Persona) session.createCriteria(Persona.class).add(Restrictions.eq("cuenta",)).uniqueResult();           
-        trans.commit();
         return result;
     }
+
     public Escalafon getEscalafon(String ci,String g){
-        Session session=this.getSession();       
-        Transaction trans=session.beginTransaction();        
+        Session session=this.sessionFactory.getCurrentSession();
         Escalafon result=(Escalafon)session.createQuery("from Escalafon e where e.docenteEscalafon.ci=:ci and e.gestion=:g").setParameter("ci",ci).setParameter("g", g).uniqueResult();
-        trans.commit();   
         return result;
     }
+
     public String getResolucion(String ci,String g){
-        Session session=this.getSession();       
-        Transaction trans=session.beginTransaction();            
+        Session session=this.sessionFactory.getCurrentSession();
         String sql="SELECT resolucion_docente FROM escalafon WHERE ci=:ci AND gestion=:g";
         String result=(String)session.createSQLQuery(sql).setParameter("ci",ci).setParameter("g", g).uniqueResult();
-        trans.commit(); 
         return result;
     }
+
     public String getResolucionPlantilla(String ci,String g){
-        Session session=this.getSession();       
-        Transaction trans=session.beginTransaction();  
-        String result=(String)session.createSQLQuery("SELECT resolucion FROM escalafon LEFT JOIN resolucion USING(tipo_res) WHERE ci=:ci AND gestion=:g").setParameter("ci",ci).setParameter("g", g).uniqueResult();        
-        trans.commit(); 
+        Session session=this.sessionFactory.getCurrentSession();
+        String result=(String)session.createSQLQuery("SELECT resolucion FROM escalafon LEFT JOIN resolucion USING(tipo_res) WHERE ci=:ci AND gestion=:g").setParameter("ci",ci).setParameter("g", g).uniqueResult();
         return result;
     }
+
     public void saveResolucion(String ci,String g,String res){
-        Session session=this.getSession();       
-        Transaction trans=session.beginTransaction();  
+        Session session=this.sessionFactory.getCurrentSession();
                 session.createSQLQuery("UPDATE escalafon SET resolucion_docente=:res WHERE ci=:ci AND gestion=:g").setParameter("ci",ci).setParameter("g", g).setParameter("res", res).executeUpdate();
-        trans.commit();        
     }
+
     public void savePlantillaResolucion(int id,String r){
-        Session session=this.getSession();       
-        Transaction trans=session.beginTransaction();  
+        Session session=this.sessionFactory.getCurrentSession();
                 session.createSQLQuery("UPDATE resolucion SET resolucion=:r WHERE tipo_res=:id").setParameter("id",id).setParameter("r", r).executeUpdate();
-        trans.commit();
     }
     public String getPlantillarResolucion(int id){
-        Session session=this.getSession();       
-        Transaction trans=session.beginTransaction();  
+        Session session=this.sessionFactory.getCurrentSession();
         String result=(String)session.createSQLQuery("SELECT resolucion FROM resolucion WHERE tipo_res=:id").setParameter("id",id).uniqueResult();
-        trans.commit();      
         return result;
     }
     public List<Object[]> getReporte(){
-        Session session=this.getSession();       
-        Transaction trans=session.beginTransaction();        
+        Session session=this.sessionFactory.getCurrentSession();
             String sql=
                     "SELECT d.docente,d.facultad,d.carrera,es.escalafon FROM(  "
                     +"          SELECT"
@@ -94,8 +100,7 @@ public class EscalafonDAO extends GenericDAO<Escalafon,Long> implements Escalafo
                     +"        GROUP BY e.ci"
                     +"    ) es USING(ci)";
             List<Object[]> result=session.createSQLQuery(sql).list();            
-        trans.commit();            
-        
+
         Object[] range=this.getRange();
         int from=(Integer)range[0];
         int to=(Integer)range[1];
@@ -122,8 +127,7 @@ public class EscalafonDAO extends GenericDAO<Escalafon,Long> implements Escalafo
         return result;
     }
     public List<Object[]> getReporteRagne(int from, int to){
-        Session session=this.getSession();       
-        Transaction trans=session.beginTransaction();        
+        Session session=this.sessionFactory.getCurrentSession();
             String sql=
                     "SELECT d.docente,d.facultad,d.carrera,es.escalafon FROM(  "
                     +"          SELECT"
@@ -146,9 +150,7 @@ public class EscalafonDAO extends GenericDAO<Escalafon,Long> implements Escalafo
                     +"        GROUP BY e.ci"
                     +"    ) es USING(ci)";
             List<Object[]> result=session.createSQLQuery(sql).setParameter("__from", from).setParameter("__to", to).list();
-        trans.commit();            
-        
-        Object[] range=this.getRange();        
+        Object[] range=this.getRange();
         int i=0;        
         TreeMap<Integer,String> cat=new TreeMap<Integer,String>();
         for (int j=0;j<result.size();j++){            
@@ -172,11 +174,17 @@ public class EscalafonDAO extends GenericDAO<Escalafon,Long> implements Escalafo
         return result;
     }
     public Object[] getRange(){
-         Session session=this.getSession();       
-        Transaction trans=session.beginTransaction();        
+        Session session=this.sessionFactory.getCurrentSession();
            String sql="select min(cast(gestion as integer)),max(cast(gestion as integer)) from docente_registro_materia";
             Object[] range=(Object[])session.createSQLQuery(sql).uniqueResult();
-        trans.commit();
         return range;
-    }    
+    }
+
+    public void update(Escalafon escalafon) {
+        escalafonDAO.update(escalafon);
+    }
+
+    public void create(Escalafon escalafon) {
+        escalafonDAO.save(escalafon);
+    }
 }

@@ -6,35 +6,56 @@
 
 package dea.controlador.dao_classes;
 
-import dea.controlador.dao_interfaces.CarreraDAOInterface;
+import dea.GenericDAOImpl;
 import dea.modelo.Carrera;
-import java.io.Serializable;
 import java.util.List;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.springframework.stereotype.Repository;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.PostConstruct;
 
 /**
  *
  * @author Doppler
  */
-@Repository
-public class CarreraDAO extends GenericDAO<Carrera,Long> implements CarreraDAOInterface,Serializable{
-     public CarreraDAO(){
-       super();
+@Service
+public class CarreraDAO {
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    private GenericDAOImpl<Carrera, Long> carreraDAO;
+    @PostConstruct
+    public void init() {
+        carreraDAO = new GenericDAOImpl<Carrera, Long>(sessionFactory, Carrera.class);
     }
 
-    @Override
+    @Transactional
     public List<Carrera> readCarrera(Long idFacultad) {
-        Session session=this.getSession();       
-        Transaction trans=session.beginTransaction();   
+        Session session=this.sessionFactory.getCurrentSession();
         List<Carrera> p=session.createQuery("from Carrera as c where c.facultad.idFacultad=:id").setParameter("id", idFacultad).list();
-        //from Cat as cat where cat.mate.name like '%s%'
-       // session.createCriteria(Facultad.class).
-           // List<Facultad> p=(List<Facultad>)session.createCriteria(Facultad.class).add(Restrictions.eq("siglaUniversidad", sigla)).list();
-        trans.commit();                
        return p;
     }
 
-   
+    @Transactional
+    public void delete(Carrera c) {
+        carreraDAO.remove(c);
+    }
+
+    @Transactional
+    public void update(Carrera c) {
+        carreraDAO.update(c);
+    }
+
+    @Transactional
+    public void create(Carrera c) {
+        carreraDAO.save(c);
+    }
+
+    @Transactional
+    public Carrera read(long id) {
+        return carreraDAO.find(id);
+    }
 }
