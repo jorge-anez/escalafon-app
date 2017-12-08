@@ -175,7 +175,8 @@ public class EscalafonDAO{
     }
     public Object[] getRange(){
         Session session=this.sessionFactory.getCurrentSession();
-           String sql="select min(cast(gestion as integer)),max(cast(gestion as integer)) from docente_registro_materia";
+           //String sql="select min(cast(gestion as integer)),max(cast(gestion as integer)) from docente_registro_materia";
+        String sql="select min(gestion),max(gestion) from docente_registro_materia";
             Object[] range=(Object[])session.createSQLQuery(sql).uniqueResult();
         return range;
     }

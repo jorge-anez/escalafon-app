@@ -122,6 +122,8 @@ public class DocenteCartillaBean implements Serializable{
     }
     public String[] getGestiones(){
         Object[] range=escalafonDAO.getRange();
+        if(range[0] == null)
+            return new String[0];
         final int from=(Integer)range[0];
         int to=(Integer)range[1];
         String[] r=new String[to-from];
