@@ -194,6 +194,10 @@
                     <jettyXml>${basedir}/my_context.xml</jettyXml>
                     <contextXml>/WEB-INF/context.xml</contextXml>
                     -->
+                    <httpConnector>
+                        <port>3000</port>
+                    </httpConnector>
+
                 </configuration>
 
                 <!--
